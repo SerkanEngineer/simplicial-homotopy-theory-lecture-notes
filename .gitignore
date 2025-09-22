@@ -1,0 +1,27 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# PDF output (comment out if you want to include the compiled PDF)
+SHT.pdf
+
+# Other LaTeX temporary files
+*.bbl
+*.blg
+*.idx
+*.ind
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.xdy
+
+# OS generated files
+.DS_Store
+Thumbs.db
