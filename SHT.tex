@@ -1024,6 +1024,17 @@ satisfying the \emph{simplicial identities}:
 \end{align*}
 
 These maps are called the \emph{face maps} and \emph{degeneracy maps} of the simplicial set $X$.
+\begin{example}[Singleton Simplicial Set]
+    Consider the set $X = \{\ast\}$ consisting of a single element. Define the simplicial set $S$ by setting $S_n = \{\ast\}$ for all $n \geq 0$. For every morphism $\phi : [m] \to [n]$ in $\Delta$, the induced map $S(\phi^*) : S_n \to S_m$ is the unique function from $\{\ast\}$ to $\{\ast\}$ (necessarily the identity).
+
+    In other words, $S$ is the \emph{constant simplicial set} at a singleton. The face and degeneracy maps are all the identity map on $\{\ast\}$:
+    \[
+        d_i(\ast) = \ast, \qquad s_i(\ast) = \ast \quad \text{for all } n \geq 0,\, 0 \leq i \leq n.
+    \]
+    This simplicial set represents a single point in every dimension, with all face and degeneracy maps trivial. Its geometric realization $|S|$ is a single point.
+\end{example}
+
+
 \begin{example}
     Let $X$ be a set and let $K_n =\prod_{i=0}^n X=X^{n+1}$ be the set of $(n+1)$-tuples of elements in $X$. Then, we can define a simplicial set $K$ as follows:
     \begin{itemize}
@@ -1142,10 +1153,38 @@ Let's elaborate the definition. A simplicial map $f : X \to Y$ between simplicia
 In other words, $f$ preserves the simplicial structure: it sends $n$-simplices to $n$-simplices in a way that is compatible with taking faces and degeneracies. This is analogous to how a continuous map between topological spaces preserves the structure of open sets, or how a group homomorphism preserves the group operation.
 
 
+Hence ,we can define a category of simplicial sets whose objects are simplicial sets and morphisms are simplicial maps. We denote this category by $\mathbf{sSet}$.
 
 
+\subsection{Products of Simplicial Sets}
 
+Given two simplicial sets $X, Y : \Delta^{op} \to \mathbf{Set}$, their \emph{product} $X \times Y$ is the simplicial set defined levelwise:
+\[
+    (X \times Y)_n = X_n \times Y_n
+\]
+for each $n \geq 0$. The face and degeneracy maps are defined componentwise:
+\[
+    d_i(x, y) = (d_i x, d_i y), \qquad s_i(x, y) = (s_i x, s_i y)
+\]
+for all $x \in X_n$, $y \in Y_n$, and $0 \leq i \leq n$.
 
+This construction makes $\mathbf{sSet}$ a cartesian closed category: the product is the categorical product, and the terminal object is the constant simplicial set at a singleton.
+
+\begin{remark}
+    More generally, limits and colimits in $\mathbf{sSet}$ are computed levelwise. That is, for any diagram of simplicial sets, the limit (or colimit) at level $n$ is the limit (or colimit) of the corresponding sets at level $n$.
+\end{remark}
+
+\begin{example}
+    If $X$ and $Y$ are both constant simplicial sets associated to sets $A$ and $B$, then $X \times Y$ is the constant simplicial set associated to $A \times B$.
+\end{example}
+
+\begin{remark}
+    The geometric realization of the product of simplicial sets is naturally homeomorphic to the product of their geometric realizations:
+    \[
+        |X \times Y| \cong |X| \times |Y|
+    \]
+    This is a key property in algebraic topology.
+\end{remark}
 
 
 
@@ -1159,7 +1198,64 @@ In other words, $f$ preserves the simplicial structure: it sends $n$-simplices t
 \section{Simplicial homotopy and Kan complexes}
 
 
+\subsection{Simplicial Homotopy}
 
+Let $X$ and $Y$ be simplicial sets, and let $f, g : X \to Y$ be simplicial maps. We want to define when $f$ and $g$ are \emph{simplicially homotopic}.
+
+\begin{definition}[Simplicial Homotopy]
+    A \emph{simplicial homotopy} $H$ from $f$ to $g$ is a collection of functions
+    \[
+        H_n : X_n \to Y_{n+1}
+    \]
+    for each $n \geq 0$, such that for all $x \in X_n$ and $0 \leq i \leq n+1$,
+    \begin{align*}
+        d_0 H_n(x)     & = f_n(x),                                           \\
+        d_{n+1} H_n(x) & = g_n(x),                                           \\
+        d_i H_n(x)     & = H_{n-1}(d_i x) \quad \text{for } 1 \leq i \leq n, \\
+        s_i H_n(x)     & = H_{n+1}(s_i x) \quad \text{for } 0 \leq i \leq n.
+    \end{align*}
+    We write $f \simeq g$ if there exists a simplicial homotopy from $f$ to $g$.
+\end{definition}
+
+\begin{remark}
+    This definition is analogous to the notion of homotopy between continuous maps, but formulated in terms of the combinatorial structure of simplicial sets.
+\end{remark}
+
+\begin{example}
+    Consider the constant simplicial set $S$ with $S_n = \{\ast\}$ for all $n$, and let $Y$ be any simplicial set with at least two distinct $0$-simplices $y_0 \neq y_1 \in Y_0$. Define $f, g : S \to Y$ by $f_n(\ast) = y_0$ and $g_n(\ast) = y_1$ for all $n$.
+
+    Suppose $Y$ is the constant simplicial set on $\{y_0, y_1\}$. Then, there is \emph{no} $1$-simplex connecting $y_0$ and $y_1$, so there cannot be a simplicial homotopy between $f$ and $g$.
+
+    Now, let $Y$ be the simplicial set associated to the $1$-simplex (i.e., $Y_0 = \{0,1\}$, $Y_1 = \{(0,1)\}$, with face maps $d_0(0,1) = 1$, $d_1(0,1) = 0$). Define $f_0(\ast) = 0$, $g_0(\ast) = 1$. There is a $1$-simplex $(0,1)$, so we can define $H_0(\ast) = (0,1)$. Then $d_0 H_0(\ast) = 1 = g_0(\ast)$, $d_1 H_0(\ast) = 0 = f_0(\ast)$. Thus, $f$ and $g$ are simplicially homotopic.
+
+    However, in general, simplicial homotopy is \emph{not} an equivalence relation. For example, it is not necessarily transitive.
+\end{example}
+
+\begin{remark}
+    The failure of transitivity can be seen by considering simplicial sets where certain "combinatorial fillers" do not exist. This motivates the following important class of simplicial sets.
+\end{remark}
+
+\subsection{Kan Complexes}
+
+\begin{definition}[Kan Complex]
+    A simplicial set $X$ is called a \emph{Kan complex} if for every $n \geq 1$, every $0 \leq k \leq n$, and every collection of $n$ $n$-simplices $\{x_i \in X_{n-1} : i \neq k\}$ such that $d_j x_i = d_{i-1} x_j$ for all $i < j$, $i, j \neq k$, there exists $x \in X_n$ such that $d_i x = x_i$ for all $i \neq k$.
+\end{definition}
+
+\begin{remark}
+    This property is also called the \emph{horn-filling condition}. Kan complexes are the simplicial analogues of topological spaces with good path-lifting properties.
+\end{remark}
+
+\begin{proposition}
+    If $X$ is a Kan complex, then simplicial homotopy is an equivalence relation on the set of simplicial maps $X \to Y$ for any simplicial set $Y$.
+\end{proposition}
+
+\begin{proof}[Sketch of Proof]
+    Reflexivity and symmetry are straightforward. For transitivity, suppose $f \simeq g$ via $H$ and $g \simeq h$ via $K$. The Kan condition allows us to "fill in" the required simplices to construct a homotopy from $f$ to $h$ by gluing $H$ and $K$ along $g$. Thus, in Kan complexes, simplicial homotopy is transitive.
+\end{proof}
+
+\begin{example}
+    The singular simplicial set $Sing(X)$ of a topological space $X$ is always a Kan complex. The nerve of a group is also a Kan complex.
+\end{example}
 
 
 
