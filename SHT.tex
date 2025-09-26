@@ -15,6 +15,7 @@
 \usetikzlibrary{3d,positioning}
 \usepackage{tikz-3dplot}
 \usepackage{tikz-cd}
+\usepackage{tikz-cd}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{geometry}
@@ -1024,14 +1025,35 @@ satisfying the \emph{simplicial identities}:
 \end{align*}
 
 These maps are called the \emph{face maps} and \emph{degeneracy maps} of the simplicial set $X$.
-\begin{example}[Singleton Simplicial Set]
-    Consider the set $X = \{\ast\}$ consisting of a single element. Define the simplicial set $S$ by setting $S_n = \{\ast\}$ for all $n \geq 0$. For every morphism $\phi : [m] \to [n]$ in $\Delta$, the induced map $S(\phi^*) : S_n \to S_m$ is the unique function from $\{\ast\}$ to $\{\ast\}$ (necessarily the identity).
 
-    In other words, $S$ is the \emph{constant simplicial set} at a singleton. The face and degeneracy maps are all the identity map on $\{\ast\}$:
+\begin{example}[Standard $n$-Simplex]
+    In the simplex category $\Delta$, $Hom_\Delta([k],[n])$ is a set, that is,
+    $Hom_\Delta([k],[n]) \in \mathbf{Set}$.
+    For fixed $[n]$, we can define a functor $\Delta[n] : \Delta^{op} \to \mathbf{Set}$ by setting $\Delta[n]([k]) = Hom_\Delta([k],[n])$ and
+    For a morphism $\phi : [l] \to [k]$ in $\Delta$, we can define
+
     \[
-        d_i(\ast) = \ast, \qquad s_i(\ast) = \ast \quad \text{for all } n \geq 0,\, 0 \leq i \leq n.
+        \Delta[n](\phi) : Hom_\Delta([k],[n]) \to Hom_\Delta([l],[n]), \quad f \mapsto f \circ \phi
     \]
-    This simplicial set represents a single point in every dimension, with all face and degeneracy maps trivial. Its geometric realization $|S|$ is a single point.
+    This defines a  functor and so it is a simplicial set.  This simplicial set is called the \emph{standard $n$-simplex} because its geometric realization is homeomorphic to the standard geometric $n$-simplex.
+
+    \paragraph{}
+    There is an equivalent way to describe the standard $n$-simplex. The set $\Delta[n]_k = Hom_\Delta([k],[n])$ is the set of non-decreasing functions from $\{0,1,\dots,k\}$ to $\{0,1,\dots,n\}$. Such a function is determined by the image of each element in $\{0,1,\dots,k\}$. Since the function is non-decreasing, the image of $i$ must be less than or equal to the image of $i+1$. Therefore, a non-decreasing function from $\{0,1,\dots,k\}$ to $\{0,1,\dots,n\}$ corresponds to a sequence of $k+1$ elements in $\{0,1,\dots,n\}$ that is non-decreasing. In other words, we can identify $\Delta[n]_k$ with the set of $(k+1)$-tuples $(x_0,x_1,\dots,x_k)$ such that $0 \leq x_0 \leq x_1 \leq \cdots \leq x_k \leq n$.
+    The face and degeneracy maps for the standard $n$-simplex $\Delta[n]$ can be described explicitly as follows. Recall that $\Delta[n]_k$ consists of all non-decreasing sequences $(x_0, x_1, \ldots, x_k)$ with $0 \leq x_0 \leq x_1 \leq \cdots \leq x_k \leq n$.
+
+    \begin{itemize}
+        \item The $i$-th face map $d_i : \Delta[n]_k \to \Delta[n]_{k-1}$ is given by deleting the $i$-th entry:
+              \[
+                  d_i(x_0, x_1, \ldots, x_k) = (x_0, \ldots, \widehat{x_i}, \ldots, x_k)
+              \]
+              where $\widehat{x_i}$ means that $x_i$ is omitted.
+
+        \item The $i$-th degeneracy map $s_i : \Delta[n]_k \to \Delta[n]_{k+1}$ is given by repeating the $i$-th entry:
+              \[
+                  s_i(x_0, x_1, \ldots, x_k) = (x_0, \ldots, x_i, x_i, x_{i+1}, \ldots, x_k)
+              \]
+    \end{itemize}
+
 \end{example}
 
 
@@ -1156,9 +1178,9 @@ In other words, $f$ preserves the simplicial structure: it sends $n$-simplices t
 Hence ,we can define a category of simplicial sets whose objects are simplicial sets and morphisms are simplicial maps. We denote this category by $\mathbf{sSet}$.
 
 
-\subsection{Products of Simplicial Sets}
-
-Given two simplicial sets $X, Y : \Delta^{op} \to \mathbf{Set}$, their \emph{product} $X \times Y$ is the simplicial set defined levelwise:
+\subsection{Basic constructions}
+\paragraph{\textbf{Cartesian Product:}}
+Given two simplicial sets $X, Y : \Delta^{op} \to \mathbf{Set}$, their \emph{cartesianproduct} $X \times Y$ is the simplicial set defined levelwise:
 \[
     (X \times Y)_n = X_n \times Y_n
 \]
@@ -1167,26 +1189,51 @@ for each $n \geq 0$. The face and degeneracy maps are defined componentwise:
     d_i(x, y) = (d_i x, d_i y), \qquad s_i(x, y) = (s_i x, s_i y)
 \]
 for all $x \in X_n$, $y \in Y_n$, and $0 \leq i \leq n$.
+There are natural projection maps $\pi_X : X \times Y \to X$ and $\pi_Y : X \times Y \to Y$  given by $\pi_X(x, y) = x$ and $\pi_Y(x, y) = y$.
 
-This construction makes $\mathbf{sSet}$ a cartesian closed category: the product is the categorical product, and the terminal object is the constant simplicial set at a singleton.
-
-\begin{remark}
-    More generally, limits and colimits in $\mathbf{sSet}$ are computed levelwise. That is, for any diagram of simplicial sets, the limit (or colimit) at level $n$ is the limit (or colimit) of the corresponding sets at level $n$.
-\end{remark}
-
-\begin{example}
-    If $X$ and $Y$ are both constant simplicial sets associated to sets $A$ and $B$, then $X \times Y$ is the constant simplicial set associated to $A \times B$.
-\end{example}
-
-\begin{remark}
-    The geometric realization of the product of simplicial sets is naturally homeomorphic to the product of their geometric realizations:
-    \[
-        |X \times Y| \cong |X| \times |Y|
-    \]
-    This is a key property in algebraic topology.
-\end{remark}
+It is easy to see that the projection maps are simplicial maps because
+\[
+    \pi_X (d_i (x,y)) = \pi_X (d_i x, d_i y) = d_i x = d_i ( \pi_X (x,y))
+\]
+and
+\[
+    \pi_X (s_i (x,y)) = \pi_X (s_i x, s_i y) = s_i x = s_i ( \pi_X (x,y))
+\]
+for all $0 \leq i \leq n$.
 
 
+\paragraph{\textbf{Subsimplicial Set:}}
+A \emph{subsimplicial set} of a simplicial set $X$ is a simplicial set $Y$ such that for each $n \geq 0$, the set $Y_n$ is a subset of $X_n$ and the face and degeneracy maps of $Y$ are the restrictions of those of $X$.
+Of course , we required that Y is closed under face and degeneracy maps.
+That is, for all $y \in Y_n$ and $0 \leq i \leq n$, we have $d_i y \in Y_{n-1}$ and $s_i y \in Y_{n+1}$.
+
+If $X ,Y $ are subsimplicial sets of a simplicial set $Z$, then we can form their intersection $X \cap Y$ defined levelwise by
+\[
+    (X \cap Y)_n = X_n \cap Y_n
+\]
+for all $n \geq 0$. The face and degeneracy maps are the restrictions of those of $X$ and $Y$:
+\[
+    d_i (x,y) = (d_i x, d_i y), \qquad s_i (x,y) = (s_i x, s_i y)
+\]
+for all $(x,y) \in (X \cap Y)_n$ and $0 \leq i \leq n$.
+
+Similarly, we can form the union $X \cup Y$ defined levelwise by
+\[
+    (X \cup Y)_n = X_n \cup Y_n
+\]
+for all $n \geq 0$. The face and degeneracy maps are the restrictions of those of $X$ and $Y$:
+\[
+    d_i (x,y) = (d_i x, d_i y), \qquad s_i (x,y) = (s_i x, s_i y)
+\]
+for all $(x,y) \in (X \cup Y)_n$ and $0 \leq i \leq n$.
+
+\paragraph{\textbf{Quotient Simplicial Set:}}
+Given a simplicial set $X$ and an equivalence relation $\sim$ on each $X_n$ that is compatible with the face and degeneracy maps, we can form the \emph{quotient simplicial set} $X/\sim$. The $n$-simplices of $X/\sim$ are the equivalence classes $[x]$ of $n$-simplices $x \in X_n$, and the face and degeneracy maps are defined by:
+\[
+    d_i([x]) = [d_i x], \qquad s_i([x]) = [s_i x]
+\]
+for all $[x] \in (X/\sim)_n$ and $0 \leq i \leq n$.
+A particular case can be the quotient by a subsimplicial set.
 
 
 
@@ -1196,44 +1243,155 @@ This construction makes $\mathbf{sSet}$ a cartesian closed category: the product
 
 
 \section{Simplicial homotopy and Kan complexes}
+We will recall the homotopy theory for topological space and we will try to translate it to simplicial sets.
+
+\subsection{Classical homotopy theory}
+In classical homotopy theory, two continuous maps
+\[
+    f,g : X \to Y
+\]
+between topological spaces are said to be \emph{homotopic} if there exists a continuous map
+\[
+    H : X \times [0,1] \to Y
+\]
+such that
+\[
+    H(x,0) = f(x) \quad \text{and} \quad H(x,1) = g(x) \quad \text{for all } x \in X.
+\]
+The map $H$ is called a \emph{homotopy} from $f$ to $g$.
+
+Diagrammatically, this can be represented as:
+
+\[
+    \begin{tikzcd}[row sep=large, column sep=large]
+        X \times \{0\} \arrow[r,hook,"i_0"] \arrow[dr,"f"'] &
+        X \times [0,1] \arrow[d,"H"] &
+        X \times \{1\} \arrow[l,hook',"i_1"] \arrow[dl,"g"] \\
+        & Y &
+    \end{tikzcd}
+\]
+
+where
+\[
+    i_0(x) = (x,0), \qquad i_1(x) = (x,1).
+\]
+
+
+
+
+The relation ``$f$ is homotopic to $g$'' (denoted $f \simeq g$) is an equivalence relation on
+\[
+    C(X,Y) = \{\, f : X \to Y \mid f \text{ continuous} \,\}.
+\]
+The equivalence classes under this relation are called the \emph{homotopy classes of maps} from $X$ to $Y$, often denoted by $[X,Y]$.
+
+
+
+Let $A \subseteq X$ be a subspace. Two continuous maps
+\[
+    f,g : X \to Y
+\]
+are said to be \emph{homotopic relative to $A$} if there exists a continuous map
+\[
+    H : X \times [0,1] \to Y
+\]
+such that
+\[
+    H(x,0) = f(x), \qquad H(x,1) = g(x) \quad \text{for all } x \in X,
+\]
+and moreover
+\[
+    H(a,t) = f(a) = g(a) \quad \text{for all } a \in A, \ t \in [0,1].
+\]
+
+In other words, the homotopy deforms $f$ to $g$ while keeping the restriction to $A$ fixed throughout.
+We write $f \simeq g \; \mathrm{rel}\, A$ in this case.
+
+
+\[
+    \begin{tikzcd}[row sep=large, column sep=large]
+        A \times [0,1] \arrow[r,hook] \arrow[dr,"f|_A = g|_A"'] &
+        X \times [0,1] \arrow[d,"H"] \\
+        & Y
+    \end{tikzcd}
+\]
+
+
+
+
+
+
+
+
+
+
+Using the homotopy relation, we define fundamental group and homotopy groups.
+First, recall the definition of path and homotopy of paths.
+
+
+
+
+
+
+A \emph{path} in a topological space $X$ is a continuous map
+\[
+    \gamma : [0,1] \to X.
+\]
+The points $\gamma(0)$ and $\gamma(1)$ are called the \emph{initial} and \emph{terminal} points of the path, respectively.
+A path is said to be a \emph{loop} if $\gamma(0) = \gamma(1)$, in which case the common value is called the \emph{basepoint}.
+
+Two paths $\gamma_0, \gamma_1 : [0,1] \to X$ with the same initial and terminal points are \emph{homotopic (rel endpoints)} if there exists a continuous map
+\[
+    H : [0,1] \times [0,1] \to X
+\]
+such that
+\[
+    H(s,0) = \gamma_0(s),
+    \quad H(s,1) = \gamma_1(s),
+    \quad H(0,t) = \gamma_0(0),
+    \quad H(1,t) = \gamma_0(1).
+\]
+That is, the homotopy keeps the endpoints fixed during the deformation.
+
+\paragraph{Fundamental Group:}
+
+Fix a basepoint $x_0 \in X$. The set of all loops based at $x_0$, modulo homotopy relative to the endpoints, forms a group under concatenation of loops.
+This group is called the \emph{fundamental group} of $X$ at $x_0$, and is denoted by
+\[
+    \pi_1(X, x_0).
+\]
+
+\subsection{The set of path components}
+
+More generally, homotopy of paths leads to the notion of path-connectedness. Two points $x,y \in X$ lie in the same \emph{path component} if there exists a path $\gamma : [0,1] \to X$ with $\gamma(0) = x$ and $\gamma(1) = y$.
+The set of path components of $X$ is denoted by
+\[
+    \pi_0(X).
+\]
+Thus $\pi_0(X)$ is a set (not a group in general), which records how many path-connected “pieces’’ the space $X$ has.
 
 
 \subsection{Simplicial Homotopy}
 
-Let $X$ and $Y$ be simplicial sets, and let $f, g : X \to Y$ be simplicial maps. We want to define when $f$ and $g$ are \emph{simplicially homotopic}.
-
 \begin{definition}[Simplicial Homotopy]
-    A \emph{simplicial homotopy} $H$ from $f$ to $g$ is a collection of functions
+    Let $X$ and $Y$ be simplicial sets, and let $f, g : X \to Y$ be simplicial maps. A \emph{simplicial homotopy} from $f$ to $g$ is a simplicial map
     \[
-        H_n : X_n \to Y_{n+1}
+        H : X \times \Delta[1] \to Y
     \]
-    for each $n \geq 0$, such that for all $x \in X_n$ and $0 \leq i \leq n+1$,
-    \begin{align*}
-        d_0 H_n(x)     & = f_n(x),                                           \\
-        d_{n+1} H_n(x) & = g_n(x),                                           \\
-        d_i H_n(x)     & = H_{n-1}(d_i x) \quad \text{for } 1 \leq i \leq n, \\
-        s_i H_n(x)     & = H_{n+1}(s_i x) \quad \text{for } 0 \leq i \leq n.
-    \end{align*}
-    We write $f \simeq g$ if there exists a simplicial homotopy from $f$ to $g$.
+    such that $H(x, 0) = f(x)$ and $H(x, 1) = g(x)$.
 \end{definition}
 
 \begin{remark}
-    This definition is analogous to the notion of homotopy between continuous maps, but formulated in terms of the combinatorial structure of simplicial sets.
+    This is not an equivalence relation on $\mathbf{sSet}(X,Y)$ in general.
 \end{remark}
 
-\begin{example}
-    Consider the constant simplicial set $S$ with $S_n = \{\ast\}$ for all $n$, and let $Y$ be any simplicial set with at least two distinct $0$-simplices $y_0 \neq y_1 \in Y_0$. Define $f, g : S \to Y$ by $f_n(\ast) = y_0$ and $g_n(\ast) = y_1$ for all $n$.
 
-    Suppose $Y$ is the constant simplicial set on $\{y_0, y_1\}$. Then, there is \emph{no} $1$-simplex connecting $y_0$ and $y_1$, so there cannot be a simplicial homotopy between $f$ and $g$.
 
-    Now, let $Y$ be the simplicial set associated to the $1$-simplex (i.e., $Y_0 = \{0,1\}$, $Y_1 = \{(0,1)\}$, with face maps $d_0(0,1) = 1$, $d_1(0,1) = 0$). Define $f_0(\ast) = 0$, $g_0(\ast) = 1$. There is a $1$-simplex $(0,1)$, so we can define $H_0(\ast) = (0,1)$. Then $d_0 H_0(\ast) = 1 = g_0(\ast)$, $d_1 H_0(\ast) = 0 = f_0(\ast)$. Thus, $f$ and $g$ are simplicially homotopic.
 
-    However, in general, simplicial homotopy is \emph{not} an equivalence relation. For example, it is not necessarily transitive.
-\end{example}
 
-\begin{remark}
-    The failure of transitivity can be seen by considering simplicial sets where certain "combinatorial fillers" do not exist. This motivates the following important class of simplicial sets.
-\end{remark}
+
+
+
 
 \subsection{Kan Complexes}
 
