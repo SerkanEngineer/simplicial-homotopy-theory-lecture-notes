@@ -13,6 +13,8 @@
 \pgfplotsset{compat=1.18}
 \usetikzlibrary{3d}
 \usetikzlibrary{3d,positioning}
+\usetikzlibrary{matrix,arrows.meta,positioning}
+
 \usepackage{tikz-3dplot}
 \usepackage{tikz-cd}
 \usepackage{tikz-cd}
@@ -51,8 +53,22 @@ The origin of simplicial homotopy theory coincides with the beginning of algebra
 
 \section{Fundamentals of Algebraic Topology}
 
-The objects of algebraic topology are geometrically “nice” topological spaces, i.e., spaces that can be triangulated.
+In algebraic topology, we study topological spaces using algebraic methods. The main idea is to associate algebraic objects (like groups, rings, modules) to topological spaces in a way that captures their essential features. This allows us to use algebraic techniques to solve topological problems.
 
+Note that topological space is a most general setting which is an abstraction of geometric objects. However, there are lots of topological spaces including the pathological ones. Therefore, in mathematics we usually restrict our attention to "nice" topological spaces that have good properties and can be studied effectively.
+In general, we have 3 types of models for "nice" topological spaces:
+
+\begin{itemize}
+    \item \textbf{Smooth Manifolds:} These are topological spaces that locally resemble Euclidean space and have a smooth structure, allowing for the definition of differentiable functions. This is more suitable for analysis and differential geometry.
+    \item \textbf{Simplicial Complexes:} These are combinatorial structures and they are suitable for combinatorics and algebra. The maps are very rigid in this model. Therefore, they are not suitable for topology because they are not flexible with continuous deformations.
+    \item \textbf{CW Complexes:} These are built from cells of various dimensions (0-cells, 1-cells, 2-cells, etc.) that are attached in a specific manner. CW complexes are very flexible and can model a wide variety of topological spaces. This is more suitable for homotopy theory and algebraic topology.
+\end{itemize}
+
+There are 2 main approaches in algebraic topology, namely the \emph{homology} and \emph{homotopy} theories.
+Homology theory by construction is highly combinatorial in nature. It uses combinatorial models of topological spaces, such as simplicial complexes. Therefore, it is easier to compute than homotopy theory.
+
+Homotopy theory, on the other hand, deals with the notion of continuous deformation. It studies spaces up to homotopy equivalence. The aim of simplicial homotopy theory is to provide a combinatorial framework for homotopy theory using simplexes.
+In this section, we will review the basic definitions and properties of simplices and singular homology.
 \subsection{Simplex }
 
 The points of a finite set $P = \{p_0, p_1, \dots, p_k\} \subset \mathbb{R}^d$ are said to be \emph{affinely independent} if they are not contained in any affine subspace of dimension less than $k$. In other words, the set
@@ -400,7 +416,7 @@ This correspondence defines a functorial relation between geometric and abstract
 
 
 
-\section{Singular Homology}
+\subsection{Singular Homology}
 
 Singular homology is a fundamental tool in algebraic topology that assigns to each topological space a sequence of abelian groups (or modules), capturing information about its shape.
 
@@ -477,7 +493,7 @@ The $n$-th \emph{singular homology group} of $X$ is defined as
 
 To define singular homology we used face maps between standard simplices. To define face maps we need to consider the standard simplices as oriented. These face maps can be seen as  order-preserving maps combinatorially. In fact, any order-preserving map between totally ordered sets induces an affine map between standard simplices.
 
-\section{Ordered Simplicial Complexes}
+\subsection{Ordered Simplicial Complexes}
 
 An \emph{ordered simplicial complex} is an abstract simplicial complex equipped with a total ordering on its vertex set. This extra structure allows us to distinguish between different orderings of the same simplex, which is important in applications such as defining orientations or working with simplicial sets.
 
@@ -520,11 +536,936 @@ An \emph{ordered simplicial complex} is an abstract simplicial complex equipped 
 \end{enumerate}
 
 
+
+
+
+
+\section{Simplex Category}
+
+
+
+
+
+We will start by solving the exercises in  the end of the previous section.
+Recall that $[n]$ denotes the totally ordered set $\{0, 1, \ldots, n\}$.
+
+\begin{enumerate}[label=(\alph*)]
+    \item Let $ \{e_0,e_1,..e_{n-1}\} $ be the standard basis for $\mathbb{R}^{n}$ ,i.e
+          \[
+              e_i = (0, \ldots, 0, 1, 0, \ldots, 0) \in \mathbb{R}^{n}
+          \] where the $1$ is in the $i+1$-th position. Note that we have different indexing from the usual.
+          . Then, $\Delta^n$ can be seen as a convex hull of the points $\{e_0,e_1,\ldots,e_{n-1} \}$.That is, for any point $p \in \Delta^n$, there exist non-negative real numbers $t_0,t_1,\ldots,t_{n-1}$ such that $\sum_{i=0}^{n-1} t_i = 1$ and
+          \[
+              p = \sum_{i=0}^{n-1} t_i e_i.
+          \]
+          For an order-preserving function $\phi : [n] \to [m]$ we have a induced map  $\Phi : \Delta^n \to \Delta^m$  given by
+          \[
+              \Phi(p) = \sum_{i=0}^{n} t_i e_{\phi(i)}.
+          \]
+
+
+    \item Write $d^j : [n-1] \to [n] $ for the order-preserving map that skips the $j$-th element. Show that any order-preserving injection $\phi : [n-k] \to [n]$ can be written uniquely as a composition of the form $d^{j_k} \circ d^{j_{k-1}} \circ \cdots \circ d^{j_1}$ with $ 0 \leq j_1 < j_2 < \cdots < j_k \leq n$.
+    \item Verify that $d^j \circ d^i = d^{i+1} \circ d^j$ if $i < j$.
+    \item Show that any order-preserving map $\phi : [n] \to [m]$ can be written uniquely as a composition of an order-preserving injection $\phi' : [n-k] \to [m]$ followed by a surjective order-preserving map $\psi : [m] \to [m-k]$.
+    \item Write $s^j : [n+1] \to [n]$ for the order-preserving map that repeats the $j$-th element. Show that any order-preserving surjection $\psi : [m] \to [n]$ can be written uniquely as a composition of the form $s^{j_k} \circ s^{j_{k-1}} \circ \cdots \circ s^{j_1}$ with $ 0 \leq j_1 < j_2 < \cdots < j_k \leq m$.
+    \item Verify that $s^j \circ s^i = s^{i+1} \circ s^j$ if $i \leq j$.
+    \item Find a formula for $s^i \circ d^j $
+\end{enumerate}
+
+
+
+\textcolor{red}{Buraya bir bak}
+
+
+We will need those relations to study simplex category.
+
+
+
+First, let us look at the poset category in more detail.
+We know that a partially ordered set $(X,\leq)$ is a category where the objects are the elements of X and there is a unique morphism from $x$ to $y$ if $x \leq y$.
+Consider two posets $(X,\leq)$ and $(Y,\leq)$  What is a functor between them?
+Let F be a funtor from X to Y.
+Then F consists of the following data:
+\begin{itemize}
+    \item For each $x \in X$, an object $F(x) \in Y$. This just says that $F$ is a a function from $X$ to $Y$.
+    \item For each $f \in Hom(x_1,x_2)$, a morphism $F(f) \in Hom(F(x_1),F(x_2))$.
+          This means that if $x_1 \leq x_2$ in $X$, then $F(x_1) \leq F(x_2)$ in $Y$. In other words, $F$ is an order-preserving function.
+\end{itemize}
+
+
+Here is the main ingredient of the theory.
+\begin{definition}[Simplex Category]
+    The \emph{simplex category} $\Delta$ is the category whose objects are the finite ordered sets $[n] = \{0,1,\dots,n\}$ for $n \geq 0$, and whose morphisms are order-preserving (non-decreasing) functions between them.
+\end{definition}
+
+Note that in this category , each object is a category itself and morphisms are functors between them.
+
+\begin{example}
+
+    Here is a list of all morphisms from $\mathbf{[2]}$ to $\mathbf{[1]}$ ,i.e. order-preserving functions $\phi : [2] \to [1]$.
+
+
+
+    \begin{center}
+        \begin{tikzpicture}[scale=1.0, font=\small]
+            \tikzset{->, shorten >=4pt, shorten <=4pt}
+
+            % First morphism
+            \foreach \i/\y in {0/2, 1/1, 2/0} {
+                    \node at (0,\y) {\i};
+                    \fill (0.2,\y) circle (2pt); % domain dots
+                }
+            \foreach \i/\y in {0/1.5, 1/0.5} {
+                    \node at (2,\y) {\i};
+                    \fill (1.8,\y) circle (2pt); % codomain dots
+                }
+            \draw (0.2,2) -- (1.8,1.5);
+            \draw (0.2,1) -- (1.8,1.5);
+            \draw (0.2,0) -- (1.8,1.5);
+
+            % Second morphism
+            \begin{scope}[xshift=4cm]
+                \foreach \i/\y in {0/2, 1/1, 2/0} {
+                        \node at (0,\y) {\i};
+                        \fill (0.2,\y) circle (2pt);
+                    }
+                \foreach \i/\y in {0/1.5, 1/0.5} {
+                        \node at (2,\y) {\i};
+                        \fill (1.8,\y) circle (2pt);
+                    }
+                \draw (0.2,2) -- (1.8,1.5);
+                \draw (0.2,1) -- (1.8,1.5);
+                \draw (0.2,0) -- (1.8,0.5);
+            \end{scope}
+
+            % Third morphism
+            \begin{scope}[xshift=8cm]
+                \foreach \i/\y in {0/2, 1/1, 2/0} {
+                        \node at (0,\y) {\i};
+                        \fill (0.2,\y) circle (2pt);
+                    }
+                \foreach \i/\y in {0/1.5, 1/0.5} {
+                        \node at (2,\y) {\i};
+                        \fill (1.8,\y) circle (2pt);
+                    }
+                \draw (0.2,2) -- (1.8,1.5);
+                \draw (0.2,1) -- (1.8,0.5);
+                \draw (0.2,0) -- (1.8,0.5);
+            \end{scope}
+
+            % Fourth morphism
+            \begin{scope}[xshift=12cm]
+                \foreach \i/\y in {0/2, 1/1, 2/0} {
+                        \node at (0,\y) {\i};
+                        \fill (0.2,\y) circle (2pt);
+                    }
+                \foreach \i/\y in {0/1.5, 1/0.5} {
+                        \node at (2,\y) {\i};
+                        \fill (1.8,\y) circle (2pt);
+                    }
+                \draw (0.2,2) -- (1.8,0.5);
+                \draw (0.2,1) -- (1.8,0.5);
+                \draw (0.2,0) -- (1.8,0.5);
+            \end{scope}
+
+        \end{tikzpicture}
+    \end{center}
+
+\end{example}
+
+
+Here is another example.
+\begin{example}
+    All morphisms from $\mathbf{[1]}$ to $\mathbf{[2]}$
+
+    \begin{center}
+        \begin{tikzpicture}[scale=1.0, font=\small]
+            \tikzset{->, shorten >=4pt, shorten <=4pt}
+
+            % ---- FIRST ROW ----
+
+            % (0,0)
+            \foreach \i/\y in {0/1.5, 1/0.5} {
+                    \node at (0,\y) {\i};
+                    \fill (0.2,\y) circle (2pt);
+                }
+            \foreach \i/\y in {0/2, 1/1, 2/0} {
+                    \node at (2,\y) {\i};
+                    \fill (1.8,\y) circle (2pt);
+                }
+            \draw (0.2,1.5) -- (1.8,2);
+            \draw (0.2,0.5) -- (1.8,2);
+
+            % (0,1)
+            \begin{scope}[xshift=4cm]
+                \foreach \i/\y in {0/1.5, 1/0.5} {
+                        \node at (0,\y) {\i};
+                        \fill (0.2,\y) circle (2pt);
+                    }
+                \foreach \i/\y in {0/2, 1/1, 2/0} {
+                        \node at (2,\y) {\i};
+                        \fill (1.8,\y) circle (2pt);
+                    }
+                \draw (0.2,1.5) -- (1.8,2);
+                \draw (0.2,0.5) -- (1.8,1);
+            \end{scope}
+
+            % (0,2)
+            \begin{scope}[xshift=8cm]
+                \foreach \i/\y in {0/1.5, 1/0.5} {
+                        \node at (0,\y) {\i};
+                        \fill (0.2,\y) circle (2pt);
+                    }
+                \foreach \i/\y in {0/2, 1/1, 2/0} {
+                        \node at (2,\y) {\i};
+                        \fill (1.8,\y) circle (2pt);
+                    }
+                \draw (0.2,1.5) -- (1.8,2);
+                \draw (0.2,0.5) -- (1.8,0);
+            \end{scope}
+
+            % ---- SECOND ROW ----
+
+            % (1,1)
+            \begin{scope}[yshift=-4cm]
+                \foreach \i/\y in {0/1.5, 1/0.5} {
+                        \node at (0,\y) {\i};
+                        \fill (0.2,\y) circle (2pt);
+                    }
+                \foreach \i/\y in {0/2, 1/1, 2/0} {
+                        \node at (2,\y) {\i};
+                        \fill (1.8,\y) circle (2pt);
+                    }
+                \draw (0.2,1.5) -- (1.8,1);
+                \draw (0.2,0.5) -- (1.8,1);
+            \end{scope}
+
+            % (1,2)
+            \begin{scope}[xshift=4cm, yshift=-4cm]
+                \foreach \i/\y in {0/1.5, 1/0.5} {
+                        \node at (0,\y) {\i};
+                        \fill (0.2,\y) circle (2pt);
+                    }
+                \foreach \i/\y in {0/2, 1/1, 2/0} {
+                        \node at (2,\y) {\i};
+                        \fill (1.8,\y) circle (2pt);
+                    }
+                \draw (0.2,1.5) -- (1.8,1);
+                \draw (0.2,0.5) -- (1.8,0);
+            \end{scope}
+
+            % (2,2)
+            \begin{scope}[xshift=8cm, yshift=-4cm]
+                \foreach \i/\y in {0/1.5, 1/0.5} {
+                        \node at (0,\y) {\i};
+                        \fill (0.2,\y) circle (2pt);
+                    }
+                \foreach \i/\y in {0/2, 1/1, 2/0} {
+                        \node at (2,\y) {\i};
+                        \fill (1.8,\y) circle (2pt);
+                    }
+                \draw (0.2,1.5) -- (1.8,0);
+                \draw (0.2,0.5) -- (1.8,0);
+            \end{scope}
+
+        \end{tikzpicture}
+    \end{center}
+
+\end{example}
+
+There is an easy way to represents morphisms from $[n]$ to $[m]$ in $\Delta$. Since $f$ is an order-preserving map, the image of $f$ is a non-decreasing sequence of elements in $[m]$ of length $n+1$.
+For example, we can represent the morphism in the examples above as follows:
+\begin{itemize}
+    \item From $[2]$ to $[1]$:
+          \begin{itemize}
+              \item $f(0)=0, f(1)=0, f(2)=0$  represented as (0,0,0)
+              \item $f(0)=0, f(1)=0, f(2)=1$  represented as (0,0,1)
+              \item $f(0)=0, f(1)=1, f(2)=1$  represented as (0,1,1)
+              \item $f(0)=1, f(1)=1, f(2)=1$  represented as (1,1,1)
+          \end{itemize}
+    \item From $[1]$ to $[2]$:
+          \begin{itemize}
+              \item $f(0)=0, f(1)=0$  represented as (0,0)
+              \item $f(0)=0, f(1)=1$  represented as (0,1)
+              \item $f(0)=0, f(1)=2$  represented as (0,2)
+              \item $f(0)=1, f(1)=1$  represented as (1,1)
+              \item $f(0)=1, f(1)=2$  represented as (1,2)
+              \item $f(0)=2, f(1)=2$  represented as (2,2)
+          \end{itemize}
+
+\end{itemize}
+
+
+
+\begin{remark}
+    The morphisms in the simplex category $\Delta$ are not necessarily injective. There is also a category of finite ordered sets, with injective order-preserving maps as morphisms.
+\end{remark}
+
+\begin{definition}[Delta Category ]
+    The \emph{category} $\Delta_{inj} $ is the category whose objects are the finite ordered sets $[n] = \{0,1,\dots,n\}$ for each $n \geq 0$, and whose morphisms are all injective order-preserving  functions between them. That is, a morphism $\phi : [n] \to [m]$ satisfies $\phi(i) < \phi(j)$ whenever $i < j$.
+\end{definition}
+Note that if $ m<n$ then $Hom_{\Delta_{inj}}([n],[m]) = \emptyset$.
+Thus, we do not have morphisms from $[2]$ to $[1]$. However we do have morphisms from $[1]$ to $[2]$ in $\Delta_{inj}$. As an example , look at the example 6.3 , 3 of the morphisms are injective.
+
+We will not use the category $\Delta_{inj}$ in this course, but it is worth noting that it is a subcategory of the simplex category $\Delta$.
+
+
+
+There are special morphisms in the simplex category $\Delta$ that is a generating set for the morphisms in $\Delta$.
+
+\begin{definition}[co-Face and co-Degeneracy Maps]
+    For each $n \geq 0$, the simplex category $\Delta$ has special morphisms:
+    \begin{itemize}
+        \item The $i$-th \emph{co-face map} $d^i : [n-1] \to [n]$ is the injective order-preserving map that skips $i$. Here is the formula for the $i$-th co-face map:
+              \begin{align*}
+                  d^i : [n-1] & \to [n] \\
+                  d^i(x)      & =
+                  \begin{cases}
+                      x     & \text{if } x < i    \\
+                      x + 1 & \text{if } x \geq i
+                  \end{cases}
+              \end{align*}
+
+        \item The $i$-th \emph{co-degeneracy map} $s^i : [n+1] \to [n]$ is the surjective order-preserving map that repeats $i$. Here is the formula for the $i$-th co-degeneracy map:
+
+              \begin{align*}
+                  s^i : [n+1] & \to [n] \\
+                  s^i(x)      & =
+                  \begin{cases}
+                      x     & \text{if } x \leq i \\
+                      x - 1 & \text{if } x > i
+                  \end{cases}
+              \end{align*}
+
+    \end{itemize}
+
+
+\end{definition}
+Any morphism in the simplex category $\Delta$ can be expressed as a composition of a surjection followed by an injection. In the exercise at the end of the 4th chapter, we asked you to verify any injection order-preserving map can be expressed as a composition of the co-face maps.
+Similarly, any surjection order-preserving map can be expressed as a composition of the co-degeneracy maps. Therefore, co-face and co-degeneracy maps generate the morphisms in the simplex category $\Delta$.
+However , they are not free generators, they satisfy some identities.
+
+\begin{proposition}[Cosimplicial Identities]
+    The co-face and co-degeneracy maps in the simplex category $\Delta$ satisfy the following \emph{cosimplicial identities} for all $i, j$:
+    \begin{align*}
+        d^j d^i & = d^i d^{j-1} \quad \text{if } i < j      \\
+        s^j s^i & = s^{i} s^{j+1} \quad \text{if } i \leq j \\
+        s^j d^i & =
+        \begin{cases}
+            d^i s^{j-1} & \text{if } i < j                     \\
+            \mathrm{id} & \text{if } i = j \text{ or } i = j+1 \\
+            d^{i-1} s^j & \text{if } i > j+1
+        \end{cases}
+    \end{align*}
+\end{proposition}
+
+\section{Simplicial Sets}
+Now, we are ready to define simplicial sets.
+\begin{definition}
+    A \emph{simplicial set} is a functor $X: \Delta^{op} \to \mathbf{Set}$, where $\Delta$ is the simplex category.
+\end{definition}
+
+Let us elaborate this definition. for each $n \geq 0$, the simplicial set $X$ assigns a set $X_n = X([n])$.
+for each morphism $f: [m] \to [n]$ in $\Delta^{op}$, we have a map $X(f): X_n \to X_m$.
+We know that each morphisms in $\Delta$ is a composition of co-face and co-degeneracy maps. Let us denote the face maps by $d_i=X(d^i)$ and the degeneracy maps by $s_i=X(s^i)$. Then, we have the following maps for each $n \geq 0$:
+\[
+    d_i : X_n \to X_{n-1} \quad (0 \leq i \leq n), \qquad s_i : X_n \to X_{n+1} \quad (0 \leq i \leq n)
+\]
+satisfying the \emph{simplicial identities}:
+\begin{align*}
+    d_i d_j & = d_{j-1} d_i \quad \text{if } i < j    \\
+    s_i s_j & = s_{j+1} s_i \quad \text{if } i \leq j \\
+    d_i s_j & =
+    \begin{cases}
+        s_{j-1} d_i & \text{if } i < j                     \\
+        \mathrm{id} & \text{if } i = j \text{ or } i = j+1 \\
+        s_j d_{i-1} & \text{if } i > j+1
+    \end{cases}
+\end{align*}
+
+These maps are called the \emph{face maps} and \emph{degeneracy maps} of the simplicial set $X$.
+
+
+
+
+
+
+
+\begin{example}[Standard $n$-Simplex]
+    In the simplex category $\Delta$, $Hom_\Delta([k],[n])$ is a set, that is,
+    $Hom_\Delta([k],[n]) \in \mathbf{Set}$.
+    For fixed $[n]$, we can define a functor $\Delta[n] : \Delta^{op} \to \mathbf{Set}$ by setting $\Delta[n]([k]) = Hom_\Delta([k],[n])$ and
+    For a morphism $\phi : [l] \to [k]$ in $\Delta$, we can define
+
+    \[
+        \Delta[n](\phi) : Hom_\Delta([k],[n]) \to Hom_\Delta([l],[n]), \quad f \mapsto f \circ \phi
+    \]
+    This defines a  functor and so it is a simplicial set.  This simplicial set is called the \emph{standard $n$-simplex} because its geometric realization is homeomorphic to the standard geometric $n$-simplex.
+
+    \paragraph{}
+    There is an equivalent way to describe the standard $n$-simplex. The set $\Delta[n]_k = Hom_\Delta([k],[n])$ is the set of non-decreasing functions from $\{0,1,\dots,k\}$ to $\{0,1,\dots,n\}$. Such a function is determined by the image of each element in $\{0,1,\dots,k\}$. Since the function is non-decreasing, the image of $i$ must be less than or equal to the image of $i+1$. Therefore, a non-decreasing function from $\{0,1,\dots,k\}$ to $\{0,1,\dots,n\}$ corresponds to a sequence of $k+1$ elements in $\{0,1,\dots,n\}$ that is non-decreasing. In other words, we can identify $\Delta[n]_k$ with the set of $(k+1)$-tuples $(x_0,x_1,\dots,x_k)$ such that $0 \leq x_0 \leq x_1 \leq \cdots \leq x_k \leq n$.
+    The face and degeneracy maps for the standard $n$-simplex $\Delta[n]$ can be described explicitly as follows. Recall that $\Delta[n]_k$ consists of all non-decreasing sequences $(x_0, x_1, \ldots, x_k)$ with $0 \leq x_0 \leq x_1 \leq \cdots \leq x_k \leq n$.
+
+    \begin{itemize}
+        \item The $i$-th face map $d_i : \Delta[n]_k \to \Delta[n]_{k-1}$ is given by deleting the $i$-th entry:
+              \[
+                  d_i(x_0, x_1, \ldots, x_k) = (x_0, \ldots, \widehat{x_i}, \ldots, x_k)
+              \]
+              where $\widehat{x_i}$ means that $x_i$ is omitted.
+
+        \item The $i$-th degeneracy map $s_i : \Delta[n]_k \to \Delta[n]_{k+1}$ is given by repeating the $i$-th entry:
+              \[
+                  s_i(x_0, x_1, \ldots, x_k) = (x_0, \ldots, x_i, x_i, x_{i+1}, \ldots, x_k)
+              \]
+    \end{itemize}
+
+\end{example}
+
+
+\begin{example}
+    Let $X$ be a set and let $K_n =\prod_{i=0}^n X=X^{n+1}$ be the set of $(n+1)$-tuples of elements in $X$. Then, we can define a simplicial set $K$ as follows:
+    \begin{itemize}
+        \item For each $n \geq 0$, let $K_n = X^{n+1}$.
+        \item The face maps $d_i : K_n \to K_{n-1}$ are defined by forgetting the $i$-th element of the tuple.
+              \begin{align*}
+                  d_i(x_0, x_1, \ldots, x_n) & = (x_0, \ldots, x_{i-1}, x_{i+1}, \ldots, x_n) \quad (0 \leq i \leq n)
+              \end{align*}
+        \item The degeneracy maps $s_i : K_n \to K_{n+1}$ are defined by repeating the $i$-th element of the tuple.
+              \begin{align*}
+                  s_i(x_0, x_1, \ldots, x_n) & = (x_0, \ldots, x_i, x_i, x_{i+1}, \ldots, x_n) \quad (0 \leq i \leq n)
+              \end{align*}
+    \end{itemize}
+
+\end{example}
+
+
+To form a category of simplicial sets, we need to define morphisms between them.
+
+
+\begin{definition}[Simplicial Map]
+    Let $X, Y : \Delta^{op} \to \mathbf{Set}$ be simplicial sets. A \emph{simplicial map} $f : X \to Y$ is a natural transformation of functors; that is, for each $n \geq 0$, a function $f_n : X_n \to Y_n$ such that for every morphism $\phi : [m] \to [n]$ in $\Delta$, the following diagram commutes:
+    \[
+        \begin{tikzcd}
+            X_n \arrow[r,"f_n"] \arrow[d,"X(\phi)"'] & Y_n \arrow[d,"Y(\phi)"] \\
+            X_m \arrow[r,"f_m"'] & Y_m
+        \end{tikzcd}
+    \]
+
+\end{definition}
+
+Let's elaborate the definition. A simplicial map $f : X \to Y$ between simplicial sets consists of a sequence of functions $f_n : X_n \to Y_n$ for each $n \geq 0$, compatible with the face and degeneracy maps. That is, for all $n \geq 0$ and $0 \leq i \leq n$, the following diagrams commute:
+\[
+    \begin{tikzcd}
+        X_n \arrow[r,"f_n"] \arrow[d,"d_i"'] & Y_n \arrow[d,"d_i"] \\
+        X_{n-1} \arrow[r,"f_{n-1}"'] & Y_{n-1}
+    \end{tikzcd}
+    \qquad
+    \begin{tikzcd}
+        X_n \arrow[r,"f_n"] \arrow[d,"s_i"'] & Y_n \arrow[d,"s_i"] \\
+        X_{n+1} \arrow[r,"f_{n+1}"'] & Y_{n+1}
+    \end{tikzcd}
+\]
+In other words, $f$ preserves the simplicial structure: it sends $n$-simplices to $n$-simplices in a way that is compatible with taking faces and degeneracies. This is analogous to how a continuous map between topological spaces preserves the structure of open sets, or how a group homomorphism preserves the group operation.
+
+
+Hence ,we can define a category of simplicial sets whose objects are simplicial sets and morphisms are simplicial maps. We denote this category by $\mathbf{sSet}$.
+
+
+
+
+\begin{example}
+    We will try to describe simplicial maps between $\Delta[n]$ and $\Delta[m]$.
+    Consider an order-preserving map $f: [n] \to [m]$ in $\Delta$. Recall that this map induces an affine map from $\Delta^n$ to $\Delta^m$ (the geometric simplicial complexes).
+    We will do a similar thing for the standard simplicial sets. Remember that $\Delta[n]_k = Hom_\Delta([k],[n])$ and $\Delta[m]_k = Hom_\Delta([k],[m])$.
+    A simplicial map  $\tilde{f} : \Delta[n] \to \Delta[m]$ consist of maps $\tilde{f}_k : \Delta[n]_k \to \Delta[m]_k$ for each $k \geq 0$.
+    The most natural way to define a function from $\Delta[n]_k$ to $\Delta[m]_k$ is as follows:
+
+    \begin{itemize}
+        \item For each $k \geq 0$, define $\tilde{f}_k : \Delta[n]_k \to \Delta[m]_k$ by composition with $f$:
+              \[
+                  \tilde{f}_k(g) = f \circ g
+              \]
+              for all $g \in \Delta[n]_k = Hom_\Delta([k],[n])$.
+    \end{itemize}
+
+
+    Is this define a simplicial map? We need to check the naturality condition.
+
+
+    Diagrammatically, for each morphism $\alpha : [l] \to [k]$ in $\Delta$, we need to check that the following diagram commutes:
+
+
+    \[
+        \begin{tikzpicture}[>=Stealth,baseline=(m.center)]
+            \matrix (m) [matrix of math nodes,row sep=3em,column sep=5em,ampersand replacement=\&]
+            {
+                \mathrm{Hom}_\Delta([k],[n]) \& \mathrm{Hom}_\Delta([k],[m]) \\
+                \mathrm{Hom}_\Delta([l],[n]) \& \mathrm{Hom}_\Delta([l],[m]) \\
+            };
+            \draw[->] (m-1-1) -- node[above] {$\tilde f_k$} (m-1-2);
+            \draw[->] (m-1-1) -- node[left] {$\Delta(\alpha)$} (m-2-1);
+            \draw[->] (m-1-2) -- node[right] {$\Delta(\alpha)$} (m-2-2);
+            \draw[->] (m-2-1) -- node[above] {$\tilde f_l$} (m-2-2);
+            % annotations outside
+            \node[above=7mm of m-1-1] {$[n] \xrightarrow{f} [m]$};
+            \node[left=7mm of m-1-1] {
+                $\begin{matrix}
+                        [k]             \\
+                        \uparrow \alpha \\
+                        [l]
+                    \end{matrix}$
+            };
+        \end{tikzpicture}
+    \]
+
+    Starting from the top left corner and going clockwise, we have
+    \[
+        \tilde{f}_l(\Delta(\alpha)(g)) = \tilde{f}_l(g \circ \alpha) = f \circ (g \circ \alpha) = (f \circ g) \circ \alpha = \Delta(\alpha)(f \circ g) = \Delta(\alpha)(\tilde{f}_k(g)).
+    \]
+    Thus, the diagram commutes, and $\tilde{f}$ is indeed a simplicial map.
+
+    Therefore, we have constructed a simplicial map $\tilde{f} : \Delta[n] \to \Delta[m]$ from an order-preserving map $f : [n] \to [m]$ in $\Delta$.
+
+    Another way to see this map is to construct it using the tuple description of the standard simplices. Recall that $\Delta[n]_k$ consists of all non-decreasing sequences $(x_0, x_1, \ldots, x_k)$ with $0 \leq x_0 \leq x_1 \leq \cdots \leq x_k \leq n$. Given an order-preserving map $f : [n] \to [m]$, we can define the simplicial map $\tilde{f} : \Delta[n] \to \Delta[m]$ by applying $f$ to each entry of the tuple:
+    \[
+        \tilde{f}_k(x_0, x_1, \ldots, x_k) = (f(x_0), f(x_1), \ldots, f(x_k)).
+    \]
+    Here, of course, we have $0 \leq f(x_0) \leq f(x_1) \leq \cdots \leq f(x_k)$, so $(f(x_0), f(x_1), \ldots, f(x_k))$ is indeed a non-decreasing sequence in $[m]$ with length $k$. This definition is consistent with the previous one, as composing a non-decreasing function $g : [k] \to [n]$ with $f$ results in a non-decreasing function $f \circ g : [k] \to [m]$.
+    This definition is consistent with the previous one, as composing a non-decreasing function $g : [k] \to [n]$ with $f$ results in a non-decreasing function $f \circ g : [k] \to [m]$.
+
+    \paragraph{}In particular, we can define the simplicial maps induced by the co-face and co-degeneracy maps in $\Delta$. As an instance , we have 2 maps from $[0]$ to $[1]$ in $\Delta$ which are the maps $d^0$ and $d^1$. They induce 2 simplicial maps from $\Delta[0]$ to $\Delta[1]$. We will write the induced maps as $\tilde{d_0}$ and $\tilde{d_1}$ respectively.
+    \begin{itemize}
+        \item The map $d^0 : [0] \to [1]$ defined by $d^0(0)=0$ induces a simplicial map $\tilde{d_0} : \Delta[0] \to \Delta[1]$ given by
+              \[
+                  \tilde{(d_0)}_k(0,0,\dots,0) = (0,0,\dots,0)
+              \]
+              for all $k \geq 0$.
+        \item The map $d^1 : [0] \to [1]$ defined by $d^1(0)=1$ induces a simplicial map $\tilde{d_1} : \Delta[0] \to \Delta[1]$ given by
+              \[
+                  \tilde{(d_1)}_k(0,0,\dots,0) = (1,1,\dots,1)
+              \]
+              for all $k \geq 0$.
+    \end{itemize}
+
+\end{example}
+
+
+
+
+
+\paragraph{More Examples of Simplicial Sets}
+
+
+
+\begin{example}[From ordered simplicial complex to simplicial set]
+    Let $(V, \Delta)$ be an ordered simplicial complex. We can define a simplicial set $X$ as follows:
+    \begin{itemize}
+        \item For each $n \geq 0$, let $X_n$ be the set of all ordered $n$-simplices in $\Delta$. That is,
+              \[
+                  X_n = \{ (v_0, v_1, \ldots, v_n) \mid \{v_0, v_1, \ldots, v_n\} \in \Delta, v_0 \leq v_1 \leq \cdots \leq v_n \}.
+              \]
+        \item The face maps $d_i : X_n \to X_{n-1}$ are defined by removing the $i$-th vertex from the ordered simplex:
+              \[
+                  d_i(v_0, v_1, \ldots, v_n) = (v_0, \ldots, v_{i-1}, v_{i+1}, \ldots, v_n) \quad (0 \leq i \leq n).
+              \]
+        \item The degeneracy maps $s_i : X_n \to X_{n+1}$ are defined by repeating the $i$-th vertex in the ordered simplex:
+              \[
+                  s_i(v_0, v_1, \ldots, v_n) = (v_0, \ldots, v_i, v_i, v_{i+1}, \ldots, v_n) \quad (0 \leq i \leq n).
+              \]
+    \end{itemize}
+    It is straightforward to verify that these face and degeneracy maps satisfy the simplicial identities. Thus, we have constructed a simplicial set from the ordered simplicial complex $(V, \Delta)$.
+    The geometric realization of this simplicial set is homeomorphic to the geometric realization of the original ordered simplicial complex. Thus, simplicial sets can be viewed as a generalization of ordered simplicial complexes.
+\end{example}
+
+\begin{example}
+    The \emph{nerve} of a category $\mathcal{C}$ is a simplicial set defined as follows:
+    \begin{itemize}
+        \item For each $n \geq 0$, let $N(\mathcal{C})_n$ be the set of $(n+1)$-tuples of composable morphisms in $\mathcal{C}$.
+              \[
+                  N(\mathcal{C})_n = \left\{
+                  \begin{tikzcd}[column sep=2.5em,ampersand replacement=\&]
+                      C_0 \arrow[r, "f_1"] \& C_1 \arrow[r, "f_2"] \& \cdots \arrow[r, "f_n"] \& C_n
+                  \end{tikzcd}
+                  \ \middle| \
+                  f_i : C_{i-1} \to C_i \text{ in } \mathcal{C}
+                  \right\}
+              \]
+        \item The face maps $d_i : N(\mathcal{C})_n \to N(\mathcal{C})_{n-1}$ compose the $i$-th and $(i+1)$-st morphisms in the sequence. That is, for a sequence of composable morphisms
+              \[
+                  \begin{tikzcd}[column sep=2.5em,ampersand replacement=\&]
+                      C_0 \arrow[r, "f_1"] \& C_1 \arrow[r, "f_2"] \& \cdots \arrow[r, "f_n"] \& C_n
+                  \end{tikzcd}
+              \]
+              the $i$-th face map ($0 \leq i \leq n$) is given by
+              \[
+                  d_i(f_1, \ldots, f_n) =
+                  \begin{cases}
+                      (f_2, \ldots, f_n)                            & i = 0             \\
+                      (f_1, \ldots, f_i \circ f_{i+1}, \ldots, f_n) & 1 \leq i \leq n-1 \\
+                      (f_1, \ldots, f_{n-1})                        & i = n
+                  \end{cases}
+              \]
+        \item The degeneracy maps $s_i : N(\mathcal{C})_n \to N(\mathcal{C})_{n+1}$ insert an identity morphism at position $i$. That is, for
+              \[
+                  \begin{tikzcd}[column sep=2.5em,ampersand replacement=\&]
+                      C_0 \arrow[r, "f_1"] \& C_1 \arrow[r, "f_2"] \& \cdots \arrow[r, "f_n"] \& C_n
+                  \end{tikzcd}
+              \]
+              the $i$-th degeneracy map ($0 \leq i \leq n$) is
+              \[
+                  s_i(f_1, \ldots, f_n) = (f_1, \ldots, f_i, \mathrm{id}_{C_i}, f_{i+1}, \ldots, f_n)
+              \]
+              which corresponds to the diagram
+              \[
+                  \begin{tikzcd}[column sep=2.5em,ampersand replacement=\&]
+                      C_0 \arrow[r, "f_1"] \& \cdots \arrow[r, "f_i"] \& C_i \arrow[r, "\mathrm{id}_{C_i}"] \& C_i \arrow[r, "f_{i+1}"] \& \cdots \arrow[r, "f_n"] \& C_n
+                  \end{tikzcd}
+              \]
+
+    \end{itemize}
+
+\end{example}
+
+
+\begin{example}[Nerve of a Group]
+    Let $G$ be a group, and consider the category $BG$ with a single object $\ast$ and morphisms $\operatorname{Hom}(\ast, \ast) = G$. The nerve $N_\bullet(BG)$ is a simplicial set where:
+    \begin{itemize}
+        \item $N(BG)_n = G^n$ for $n \geq 0$ (by convention, $G^0$ is a singleton).
+        \item The face maps $d_i : G^n \to G^{n-1}$ are given by:
+              \[
+                  d_i(g_1, \ldots, g_n) =
+                  \begin{cases}
+                      (g_2, \ldots, g_n)                      & i = 0             \\
+                      (g_1, \ldots, g_i g_{i+1}, \ldots, g_n) & 1 \leq i \leq n-1 \\
+                      (g_1, \ldots, g_{n-1})                  & i = n
+                  \end{cases}
+              \]
+        \item The degeneracy maps $s_j : G^n \to G^{n+1}$ are given by:
+              \[
+                  s_j(g_1, \ldots, g_n) = (g_1, \ldots, g_j, e, g_{j+1}, \ldots, g_n)
+              \]
+              where $e$ is the identity element of $G$.
+    \end{itemize}
+\end{example}
+
+
+
+
+\subsection{Basic constructions}
+
+\paragraph{\textbf{Cartesian Product:}}
+Given two simplicial sets $X, Y : \Delta^{op} \to \mathbf{Set}$, their \emph{cartesian product} $X \times Y$ is the simplicial set defined levelwise:
+\[
+    (X \times Y)_n = X_n \times Y_n
+\]
+for each $n \geq 0$. The face and degeneracy maps are defined componentwise:
+\[
+    d_i(x, y) = (d_i x, d_i y), \qquad s_i(x, y) = (s_i x, s_i y)
+\]
+for all $x \in X_n$, $y \in Y_n$, and $0 \leq i \leq n$.
+There are natural projection maps $\pi_X : X \times Y \to X$ and $\pi_Y : X \times Y \to Y$ given by
+\[
+    \pi_X(x, y) = x, \qquad \pi_Y(x, y) = y.
+\]
+It is straightforward to check that these are simplicial maps.
+
+\paragraph{\textbf{Subsimplicial Set:}}
+A \emph{subsimplicial set} of a simplicial set $X$ is a simplicial set $Y$ such that for each $n \geq 0$, the set $Y_n$ is a subset of $X_n$ and the face and degeneracy maps of $Y$ are the restrictions of those of $X$.
+We require that $Y$ is closed under face and degeneracy maps: for all $y \in Y_n$ and $0 \leq i \leq n$, we have
+\[
+    d_i y \in Y_{n-1}, \qquad s_i y \in Y_{n+1}.
+\]
+
+We can view also a subsimplicial set as a simplicial map $i : Y \to X$ such that each $i_n : Y_n \to X_n$ is an inclusion map. By definition of a subsimplicial set, this map is a simplicial map.
+
+Conversely, if we have a simplicial map $f : Y \to X$ , then the image $f(Y)$ is a subsimplicial set of $X$. Take $f(Y)_n = f_n(Y_n) \subset X_n$ for each $n \geq 0$. Since $f$ is a simplicial map, $f(Y)$ is closed under face and degeneracy maps.
+
+\paragraph{\textbf{Intersection of Subsimplicial Sets:}}
+If $X ,Y $ are subsimplicial sets of a simplicial set $Z$, then their intersection $X \cap Y$ is defined levelwise by
+\[
+    (X \cap Y)_n = X_n \cap Y_n
+\]
+for all $n \geq 0$. Since both $X$ and $Y$ are closed under face and degeneracy maps, so is $X \cap Y$. In particular, if $z \in (X \cap Y)_n$ and $0 \leq i \leq n$, then
+\[
+    d_i z \in (X \cap Y)_{n-1}, \qquad s_i z \in (X \cap Y)_{n+1}.
+\]
+
+\paragraph{\textbf{Union of Subsimplicial Sets:}}
+If $X ,Y $ are subsimplicial sets of a simplicial set $Z$, then their union $X \cup Y$ is defined levelwise by
+\[
+    (X \cup Y)_n = X_n \cup Y_n
+\]
+for all $n \geq 0$. Again, $X \cup Y$ is closed under face and degeneracy maps. Explicitly, if $z \in (X \cup Y)_n$ and $0 \leq i \leq n$, then
+\[
+    d_i z \in (X \cup Y)_{n-1}, \qquad s_i z \in (X \cup Y)_{n+1}.
+\]
+
+\paragraph{\textbf{Quotient Simplicial Set:}}
+Given a simplicial set $X$ and an equivalence relation $\sim$ on each $X_n$ that is \emph{simplicial} (i.e.~compatible with the face and degeneracy maps), we can form the \emph{quotient simplicial set} $X/\sim$. The $n$-simplices of $X/\sim$ are the equivalence classes $[x]$ of $n$-simplices $x \in X_n$, and the face and degeneracy maps are defined by
+\[
+    d_i([x]) = [d_i x], \qquad s_i([x]) = [s_i x]
+\]
+for all $[x] \in (X/\sim)_n$ and $0 \leq i \leq n$.
+A particular case is the quotient by a subsimplicial set.
+
+
+\paragraph{\textbf{Boundary of the Standard $n$-Simplex:}}
+The \emph{standard $n$-simplex} $\Delta[n]$ is the simplicial set $\hom_\Delta(-,[n])$.
+Its \emph{boundary}, denoted $\partial \Delta[n]$, is the subsimplicial set of $\Delta[n]$ generated by the images of the simplicial maps induced by the coface maps
+\[
+    d^i : [n-1] \to [n], \qquad 0 \leq i \leq n.
+\]
+Formally,
+\[
+    \partial \Delta[n] = \bigcup_{i=0}^n \operatorname{im}(\tilde{d_i} : \Delta[n-1] \to \Delta[n]).
+\]
+Thus, $\partial \Delta[n]$ is the union of subsimplicial sets, so it is a subsimplicial set itself.
+\paragraph{\textbf{Horn:}}
+For each $0 \leq k \leq n$, the \emph{$k$-th horn} $\Lambda^n_k$ of $\Delta[n]$ is the subsimplicial set of $\Delta[n]$ generated by all the $(n-1)$-dimensional faces except the $k$-th one.
+Formally,
+\[
+    \Lambda^n_k = \bigcup_{\substack{0 \leq i \leq n \\ i \neq k}} \operatorname{im}(\tilde{d_i} : \Delta[n-1] \to \Delta[n]).
+\]
+$\Lambda^n_k$ is a subsimplicial set because it is a union of subsimplicial sets.
+
+
+\subsection{Degenerate and Non-degenerate simplices}
+
+Let $X$ be a simplicial set. An $n$-simplex $x \in X_n$ is called \emph{degenerate} if there exists a degeneracy map $s_i : X_{n-1} \to X_n$ and $y \in X_{n-1}$ such that $x = s_i(y)$ for some $0 \leq i \leq n-1$. Otherwise, $x$ is called \emph{non-degenerate}.
+
+Every 0-simplex is non-degenerate because there are no degeneracy maps coming to $X_0$.
+for degenerate simplices, we have the following characterization
+\begin{lemma}[Eilenberg–Zilber Lemma]
+    Let $X$ be a simplicial set. An n-simplex $x \in X_n$ is either non-degenerate or   x can be   uniquely written as $x = s_{i_1} s_{i_2} \cdots s_{i_k}(y)$, where $y \in X_{n-k}$ is non-degenerate and $0 \leq i_1 < i_2 < \cdots < i_k < n$.
+\end{lemma}
+\begin{proof}
+    Now , if $x$ is non-degenerate, we are done. \\
+    Otherwise, there exists a degeneracy map $s_i : X_{n-1} \to X_n$ and $y \in X_{n-1}$ such that $x = s_i(y)$ for some $0 \leq i \leq n-1$. If $y$ is non-degenerate, we are done. Otherwise, we can repeat the process. Since the dimension of the simplex decreases at each step, this process must terminate after a finite number of steps , which is at most $n$ steps. Therefore, we can write
+    \[
+        x = s_{i_1} s_{i_2} \cdots s_{i_k}(y)
+    \]
+    for some $y \in X_{n-k}$ that is non-degenerate and $0 \leq i_1, i_2, \ldots, i_k < n$.
+    Using the simplicial identities, we can further obtain a representation such that $0 \leq i_1 < i_2 < \cdots < i_k < n$.\\
+
+    Now, we will prove the uniqueness of this representation. Suppose that
+    \[
+        x = s_{i_1} s_{i_2} \cdots s_{i_k}(y) = s_{j_1} s_{j_2} \cdots s_{j_m}(z)
+    \]
+    for some $y \in X_{n-k}$ and $z \in X_{n-m}$ that are non-degenerate.
+
+\end{proof}
+
+
+
+The set of non-degenerate $n$-simplices of $X$ is often denoted by $X_n^{ND}$.
+
+Degenerate simplices are those that arise from lower-dimensional simplices by applying degeneracy maps, i.e., by "repeating" vertices. Non-degenerate simplices are those that cannot be written in this way.
+
+\begin{example}
+    In the standard $n$-simplex $\Delta[n]$, every $k$-simplex for $k < n$ is degenerate, except for the identity map $\mathrm{id}_{[n]} : [n] \to [n]$, which is non-degenerate in degree $n$.
+\end{example}
+
+A fundamental result about the structure of simplicial sets is the following:
+
+
+
+This lemma implies that the data of a simplicial set is completely determined by its non-degenerate simplices and the simplicial identities.
+
+
+\subsection{Geometric Realization of Simplicial Sets}
+The geometric realization of a simplicial set $X$ is a topological space denoted by $|X|$. It is constructed by gluing together standard simplices according to the combinatorial data of the simplicial set.
+
+More precisely, the $n$-simplices of $X$ are realized as standard $n$-simplices in Euclidean space, and the face and degeneracy maps are used to identify faces and degenerate simplices appropriately.
+
+\begin{definition}[Geometric Realization]
+    The geometric realization of a simplicial set $X$ is the topological space
+    \[
+        |X| = \coprod_{n \geq 0} X_n \times \Delta[n] / \sim
+    \]
+    where $\Delta[n]$ is the standard $n$-simplex and the equivalence relation $\sim$ identifies points according to the face and degeneracy maps.
+\end{definition}
+
+
+
+
+
+\section{Simplicial homotopy and Kan complexes}
+We will recall the homotopy theory for topological space and we will try to translate it to simplicial sets.
+
+\subsection{Classical homotopy theory}
+In classical homotopy theory, two continuous maps
+\[
+    f,g : X \to Y
+\]
+between topological spaces are said to be \emph{homotopic} if there exists a continuous map
+\[
+    H : X \times [0,1] \to Y
+\]
+such that
+\[
+    H(x,0) = f(x) \quad \text{and} \quad H(x,1) = g(x) \quad \text{for all } x \in X.
+\]
+The map $H$ is called a \emph{homotopy} from $f$ to $g$.
+
+Diagrammatically, this can be represented as:
+
+\[
+    \begin{tikzcd}[row sep=large, column sep=large]
+        X \times \{0\} \arrow[d,hook,"i_0"'] \arrow[dr,"f"] & \\
+        X \times [0,1] \arrow[r,"H"] & Y \\
+        X \times \{0\} \arrow[u,hook,"i_1"] \arrow[ur,"g"'] &
+    \end{tikzcd}
+\]
+
+where
+\[
+    i_0(x,0) = (x,0), \qquad i_1(x,0) = (x,1).
+\]
+
+The relation ``$f$ is homotopic to $g$'' (denoted $f \simeq g$) is an equivalence relation on
+\[
+    C(X,Y) = \{\, f : X \to Y \mid f \text{ continuous} \,\}.
+\]
+The equivalence classes under this relation are called the \emph{homotopy classes of maps} from $X$ to $Y$, often denoted by $[X,Y]$.
+
+We need to have a slightly general notion of homotopy.
+
+\paragraph{}
+A \emph{pointed space} is a pair $(X, x_0)$ consisting of a topological space $X$ together with a distinguished basepoint $x_0 \in X$.
+
+\begin{definition}[Pointed Map]
+    Let $(X, x_0)$ and $(Y, y_0)$ be pointed spaces. A \emph{pointed map} (or \emph{based map}) $f : (X, x_0) \to (Y, y_0)$ is a continuous map $f : X \to Y$ such that $f(x_0) = y_0$.
+\end{definition}
+
+\begin{definition}[Relative Homotopy]
+    Let $f, g : (X, x_0) \to (Y, y_0)$ be pointed maps. We say that $f$ and $g$ are homotopic relative to their basepoints if there exists a continuous map
+    \[
+        H : X \times [0,1] \to Y
+    \]
+    such that $H(x,0) = f(x)$, $H(x,1) = g(x)$ for all $x \in X$, and $H(x_0, t) = y_0$ for all $t \in [0,1]$.
+\end{definition}
+
+That is, a pointed homotopy deforms $f$ to $g$ through maps that all send the basepoint $x_0$ to $y_0$ at every stage.
+
+The set of continuous pointed maps from $(X, x_0)$ to $(Y, y_0)$ is denoted  by $C((X, x_0), (Y, y_0))$.
+The relation ``$f$ is  homotopic to $g$ relative to $x_0$''  is an equivalence relation on $C((X, x_0), (Y, y_0))$.
+The set of  equivalence classes under this relation is denoted by $[(X, x_0), (Y, y_0)]$.
+
+
+
+
+
+Using the homotopy relation, we define fundamental group and homotopy groups.
+
+
+
+
+
+
+
+
+\paragraph{Homotopy Groups:}
+
+Fix a basepoint $x_0 \in X$. The set of all loops based at $x_0$, modulo homotopy relative to the endpoints, forms a group under concatenation of loops.
+This group is called the \emph{fundamental group} of $X$ at $x_0$, and is denoted by
+\[
+    \pi_1(X, x_0) =[(S^1, \ast  ),(X, x_0)].
+\]
+Generally, the $n$-th \emph{homotopy group} of $X$ at $x_0$ is defined as
+\[
+    \pi_n(X, x_0) =[(S^n, \ast  ),(X, x_0)].
+\]
+
+\paragraph{}
+The case for $n=0$ is quite different. The set $\pi_0(X)$ is defined as the set of path components of $X$. That is, two points $x,y \in X$ are in the same path component if there exists a continuous map $\gamma : [0,1] \to X$ such that $\gamma(0) = x$ and $\gamma(1) = y$. This gives a equivalence relation on the set of points in $X$.
+
+
+\subsection{Simplicial Homotopy}
+
+\begin{definition}[Simplicial Homotopy]
+    Let $X$ and $Y$ be simplicial sets, and let $f, g : X \to Y$ be simplicial maps. A \emph{simplicial homotopy} from $f$ to $g$ is a simplicial map
+    \[
+        H : X \times \Delta[1] \to Y
+    \]
+    such that $H(x, 0) = f(x)$ and $H(x, 1) = g(x)$.
+\end{definition}
+
+Diagrammatically, this can be represented as:
+
+
+\[
+    \begin{tikzcd}[row sep=large, column sep=large]
+        X \times \Delta[0] \arrow[d,hook,"{(\mathrm{Id}_X,\tilde{d_0})}"'] \arrow[dr,"f"] & \\
+        X \times \Delta[1] \arrow[r,"H"] & Y \\
+        X \times \Delta[0] \arrow[u,hook,"{(\mathrm{Id}_X,\tilde{d_1})}"] \arrow[ur,"g"'] &
+    \end{tikzcd}
+\]
+
+Here , $\tilde{d_0} : \Delta[0] \to \Delta[1]$ and $\tilde{d_1} : \Delta[0] \to \Delta[1]$ are the simplicial maps induced by the face maps $d^0 : [0] \to [1]$ and $d^1 : [0] \to [1]$ in $\Delta$, respectively.
+
+
+
+
+
+
+
+
+
+
+The relation ``$f$ is simplicially homotopic to $g$'' (denoted $f \simeq g$) is called \emph{simplicial homotopy}.
+
+\begin{remark}
+    This is not an equivalence relation on $\mathbf{sSet}(X,Y)$ in general.
+
+\end{remark}
+
+For example, take $X=\Delta[0]$. In this case  having a homotopy between the maps $f$ and $g$ gives the following relation.
+
+Let  $a, b \in Y_0$  be 0-simplices. Then,  $a \sim b$ if and only if there exists  $ \sigma \in Y_1$ such that $d_0 \sigma = a$ and $d_1 \sigma = b$.
+
+
+Now, is it an equivalence relation?
+
+The answer is no because for a standard 1-simplex $\Delta[1]$, we have a 1-simplex $\sigma= (0,1) \in \Delta[1]_0 $ with $d_0(\sigma)  = 1$ and $d_1(\sigma) = 0$. However, there is no 1-simplex $\mu \in \Delta[1]_1$ such that $d_0(\mu) = 0$ and $d_1(\mu) = 1$. Therefore, the relation is not symmetric.
+
+
+\subsection{Kan Complexes}
+
+\begin{definition}[Kan Complex]
+    A simplicial set $X$ is called a \emph{Kan complex} if for every $n \geq 1$, every $0 \leq k \leq n$, and every collection of $n$ $n$-simplices $\{x_i \in X_{n-1} : i \neq k\}$ such that $d_j x_i = d_{i-1} x_j$ for all $i < j$, $i, j \neq k$, there exists $x \in X_n$ such that $d_i x = x_i$ for all $i \neq k$.
+\end{definition}
+
+\begin{remark}
+    This property is also called the \emph{horn-filling condition}. Kan complexes are the simplicial analogues of topological spaces with good path-lifting properties.
+\end{remark}
+
+\begin{proposition}
+    If $X$ is a Kan complex, then simplicial homotopy is an equivalence relation on the set of simplicial maps $X \to Y$ for any simplicial set $Y$.
+\end{proposition}
+
+\begin{proof}[Sketch of Proof]
+    Reflexivity and symmetry are straightforward. For transitivity, suppose $f \simeq g$ via $H$ and $g \simeq h$ via $K$. The Kan condition allows us to "fill in" the required simplices to construct a homotopy from $f$ to $h$ by gluing $H$ and $K$ along $g$. Thus, in Kan complexes, simplicial homotopy is transitive.
+\end{proof}
+
+\begin{example}
+    The singular simplicial set $Sing(X)$ of a topological space $X$ is always a Kan complex. The nerve of a group is also a Kan complex.
+\end{example}
+
+
+
+
+
+
+\appendix
+
+
 \section{Category Theory Basics}
 
 Category theory provides a unifying language for much of modern mathematics, including algebraic topology.
 We will use category theoretical framework to translate classical homotopy theory to more combinatorial theory.
 We recall some basic definitions and examples.
+
+
 
 \subsection{Categories}
 
@@ -742,678 +1683,11 @@ A category is a very general definition. The objects can be anything, and the mo
 
 
 
-\section{Simplicial Sets}
-Let us look at the poset category in more detail.
-We know that a partially ordered set $(X,\leq)$ is a category where the objects are the elements of X and there is a unique morphism from $x$ to $y$ if $x \leq y$.
-Consider two posets $(X,\leq)$ and $(Y,\leq)$  What is a functor between them?
-Let F be a funtor from X to Y.
-Then F consists of the following data:
-\begin{itemize}
-    \item For each $x \in X$, an object $F(x) \in Y$. This just says that $F$ is a a function from $X$ to $Y$.
-    \item For each $f \in Hom(x_1,x_2)$, a morphism $F(f) \in Hom(F(x_1),F(x_2))$.
-          This means that if $x_1 \leq x_2$ in $X$, then $F(x_1) \leq F(x_2)$ in $Y$. In other words, $F$ is an order-preserving function.
-\end{itemize}
 
 
-Here is the main ingredient of the theory.
-\begin{definition}[Simplex Category]
-    The \emph{simplex category} $\Delta$ is the category whose objects are the finite ordered sets $[n] = \{0,1,\dots,n\}$ for $n \geq 0$, and whose morphisms are order-preserving (non-decreasing) functions between them.
-\end{definition}
 
-Each finite ordered set is isomorphic to the ordered set $[n]$ for some $n \geq 0$. Technically speaking, in $\Delta$, the objects are categories themselves, and the morphisms correspond to the functors between them.
-On the other hand, to study the simplex category, we only need to consider the ordered set  $[n]$ and the set of non-decreasing functions between them.
 
 
-
-\begin{example}
-
-    All morphisms from $\mathbf{[2]}$ to $\mathbf{[1]}$.
-
-
-
-    \begin{center}
-        \begin{tikzpicture}[scale=1.0, font=\small]
-            \tikzset{->, shorten >=4pt, shorten <=4pt}
-
-            % First morphism
-            \foreach \i/\y in {0/2, 1/1, 2/0} {
-                    \node at (0,\y) {\i};
-                    \fill (0.2,\y) circle (2pt); % domain dots
-                }
-            \foreach \i/\y in {0/1.5, 1/0.5} {
-                    \node at (2,\y) {\i};
-                    \fill (1.8,\y) circle (2pt); % codomain dots
-                }
-            \draw (0.2,2) -- (1.8,1.5);
-            \draw (0.2,1) -- (1.8,1.5);
-            \draw (0.2,0) -- (1.8,1.5);
-
-            % Second morphism
-            \begin{scope}[xshift=4cm]
-                \foreach \i/\y in {0/2, 1/1, 2/0} {
-                        \node at (0,\y) {\i};
-                        \fill (0.2,\y) circle (2pt);
-                    }
-                \foreach \i/\y in {0/1.5, 1/0.5} {
-                        \node at (2,\y) {\i};
-                        \fill (1.8,\y) circle (2pt);
-                    }
-                \draw (0.2,2) -- (1.8,1.5);
-                \draw (0.2,1) -- (1.8,1.5);
-                \draw (0.2,0) -- (1.8,0.5);
-            \end{scope}
-
-            % Third morphism
-            \begin{scope}[xshift=8cm]
-                \foreach \i/\y in {0/2, 1/1, 2/0} {
-                        \node at (0,\y) {\i};
-                        \fill (0.2,\y) circle (2pt);
-                    }
-                \foreach \i/\y in {0/1.5, 1/0.5} {
-                        \node at (2,\y) {\i};
-                        \fill (1.8,\y) circle (2pt);
-                    }
-                \draw (0.2,2) -- (1.8,1.5);
-                \draw (0.2,1) -- (1.8,0.5);
-                \draw (0.2,0) -- (1.8,0.5);
-            \end{scope}
-
-            % Fourth morphism
-            \begin{scope}[xshift=12cm]
-                \foreach \i/\y in {0/2, 1/1, 2/0} {
-                        \node at (0,\y) {\i};
-                        \fill (0.2,\y) circle (2pt);
-                    }
-                \foreach \i/\y in {0/1.5, 1/0.5} {
-                        \node at (2,\y) {\i};
-                        \fill (1.8,\y) circle (2pt);
-                    }
-                \draw (0.2,2) -- (1.8,0.5);
-                \draw (0.2,1) -- (1.8,0.5);
-                \draw (0.2,0) -- (1.8,0.5);
-            \end{scope}
-
-        \end{tikzpicture}
-    \end{center}
-
-\end{example}
-
-
-Here is another example.
-\begin{example}
-    All morphisms from $\mathbf{[1]}$ to $\mathbf{[2]}$
-
-    \begin{center}
-        \begin{tikzpicture}[scale=1.0, font=\small]
-            \tikzset{->, shorten >=4pt, shorten <=4pt}
-
-            % ---- FIRST ROW ----
-
-            % (0,0)
-            \foreach \i/\y in {0/1.5, 1/0.5} {
-                    \node at (0,\y) {\i};
-                    \fill (0.2,\y) circle (2pt);
-                }
-            \foreach \i/\y in {0/2, 1/1, 2/0} {
-                    \node at (2,\y) {\i};
-                    \fill (1.8,\y) circle (2pt);
-                }
-            \draw (0.2,1.5) -- (1.8,2);
-            \draw (0.2,0.5) -- (1.8,2);
-
-            % (0,1)
-            \begin{scope}[xshift=4cm]
-                \foreach \i/\y in {0/1.5, 1/0.5} {
-                        \node at (0,\y) {\i};
-                        \fill (0.2,\y) circle (2pt);
-                    }
-                \foreach \i/\y in {0/2, 1/1, 2/0} {
-                        \node at (2,\y) {\i};
-                        \fill (1.8,\y) circle (2pt);
-                    }
-                \draw (0.2,1.5) -- (1.8,2);
-                \draw (0.2,0.5) -- (1.8,1);
-            \end{scope}
-
-            % (0,2)
-            \begin{scope}[xshift=8cm]
-                \foreach \i/\y in {0/1.5, 1/0.5} {
-                        \node at (0,\y) {\i};
-                        \fill (0.2,\y) circle (2pt);
-                    }
-                \foreach \i/\y in {0/2, 1/1, 2/0} {
-                        \node at (2,\y) {\i};
-                        \fill (1.8,\y) circle (2pt);
-                    }
-                \draw (0.2,1.5) -- (1.8,2);
-                \draw (0.2,0.5) -- (1.8,0);
-            \end{scope}
-
-            % ---- SECOND ROW ----
-
-            % (1,1)
-            \begin{scope}[yshift=-4cm]
-                \foreach \i/\y in {0/1.5, 1/0.5} {
-                        \node at (0,\y) {\i};
-                        \fill (0.2,\y) circle (2pt);
-                    }
-                \foreach \i/\y in {0/2, 1/1, 2/0} {
-                        \node at (2,\y) {\i};
-                        \fill (1.8,\y) circle (2pt);
-                    }
-                \draw (0.2,1.5) -- (1.8,1);
-                \draw (0.2,0.5) -- (1.8,1);
-            \end{scope}
-
-            % (1,2)
-            \begin{scope}[xshift=4cm, yshift=-4cm]
-                \foreach \i/\y in {0/1.5, 1/0.5} {
-                        \node at (0,\y) {\i};
-                        \fill (0.2,\y) circle (2pt);
-                    }
-                \foreach \i/\y in {0/2, 1/1, 2/0} {
-                        \node at (2,\y) {\i};
-                        \fill (1.8,\y) circle (2pt);
-                    }
-                \draw (0.2,1.5) -- (1.8,1);
-                \draw (0.2,0.5) -- (1.8,0);
-            \end{scope}
-
-            % (2,2)
-            \begin{scope}[xshift=8cm, yshift=-4cm]
-                \foreach \i/\y in {0/1.5, 1/0.5} {
-                        \node at (0,\y) {\i};
-                        \fill (0.2,\y) circle (2pt);
-                    }
-                \foreach \i/\y in {0/2, 1/1, 2/0} {
-                        \node at (2,\y) {\i};
-                        \fill (1.8,\y) circle (2pt);
-                    }
-                \draw (0.2,1.5) -- (1.8,0);
-                \draw (0.2,0.5) -- (1.8,0);
-            \end{scope}
-
-        \end{tikzpicture}
-    \end{center}
-
-\end{example}
-
-\begin{remark}
-    The morphisms in the simplex category $\Delta$ are not necessarily injective. There is also a category of finite ordered sets, with injective order-preserving maps as morphisms.
-\end{remark}
-
-\begin{definition}[Delta Category ]
-    The \emph{category} $\Delta_{inj} $ is the category whose objects are the finite ordered sets $[n] = \{0,1,\dots,n\}$ for each $n \geq 0$, and whose morphisms are all injective order-preserving  functions between them. That is, a morphism $\phi : [n] \to [m]$ satisfies $\phi(i) < \phi(j)$ whenever $i < j$.
-\end{definition}
-Note that if $ m<n$ then $Hom_{\Delta_{inj}}([n],[m]) = \emptyset$.
-Thus, we do not have morphisms from $[2]$ to $[1]$. However we do have morphisms from $[1]$ to $[2]$ in $\Delta_{inj}$. As an example , look at the example 6.3 , 3 of the morphisms are injective.
-
-We will not use the category $\Delta_{inj}$ in this course, but it is worth noting that it is a subcategory of the simplex category $\Delta$.
-
-
-
-There are special morphisms in the simplex category $\Delta$ that is a generating set for the morphisms in $\Delta$.
-
-\begin{definition}[co-Face and co-Degeneracy Maps]
-    For each $n \geq 0$, the simplex category $\Delta$ has special morphisms:
-    \begin{itemize}
-        \item The $i$-th \emph{co-face map} $d^i : [n-1] \to [n]$ is the injective order-preserving map that skips $i$. Here is the formula for the $i$-th co-face map:
-              \begin{align*}
-                  d^i : [n-1] & \to [n] \\
-                  d^i(x)      & =
-                  \begin{cases}
-                      x     & \text{if } x < i    \\
-                      x + 1 & \text{if } x \geq i
-                  \end{cases}
-              \end{align*}
-
-        \item The $i$-th \emph{co-degeneracy map} $s^i : [n+1] \to [n]$ is the surjective order-preserving map that repeats $i$. Here is the formula for the $i$-th co-degeneracy map:
-
-              \begin{align*}
-                  s^i : [n+1] & \to [n] \\
-                  s^i(x)      & =
-                  \begin{cases}
-                      x     & \text{if } x \leq i \\
-                      x - 1 & \text{if } x > i
-                  \end{cases}
-              \end{align*}
-
-    \end{itemize}
-
-
-\end{definition}
-Any morphism in the simplex category $\Delta$ can be expressed as a composition of a surjection followed by an injection. In the exercise at the end of the 4th chapter, we asked you to verify any injection order-preserving map can be expressed as a composition of the co-face maps.
-Similarly, any surjection order-preserving map can be expressed as a composition of the co-degeneracy maps. Therefore, co-face and co-degeneracy maps generate the morphisms in the simplex category $\Delta$.
-However , they are not free generators, they satisfy some identities.
-
-\begin{proposition}[Cosimplicial Identities]
-    The co-face and co-degeneracy maps in the simplex category $\Delta$ satisfy the following \emph{cosimplicial identities} for all $i, j$:
-    \begin{align*}
-        d^j d^i & = d^i d^{j-1} \quad \text{if } i < j      \\
-        s^j s^i & = s^{i} s^{j+1} \quad \text{if } i \leq j \\
-        s^j d^i & =
-        \begin{cases}
-            d^i s^{j-1} & \text{if } i < j                     \\
-            \mathrm{id} & \text{if } i = j \text{ or } i = j+1 \\
-            d^{i-1} s^j & \text{if } i > j+1
-        \end{cases}
-    \end{align*}
-\end{proposition}
-
-
-Now, we are ready to define simplicial sets.
-\begin{definition}
-    A \emph{simplicial set} is a functor $X: \Delta^{op} \to \mathbf{Set}$, where $\Delta$ is the simplex category.
-\end{definition}
-
-Let us elaborate this definition. for each $n \geq 0$, the simplicial set $X$ assigns a set $X_n = X([n])$.
-for each morphism $f: [m] \to [n]$ in $\Delta^{op}$, we have a map $X(f): X_n \to X_m$.
-We know that each morphisms in $\Delta$ is a composition of co-face and co-degeneracy maps. Let us denote the face maps by $d_i=(d^i)^*$ and the degeneracy maps by $s_i=(s^i)^*$. Then, we have the following maps for each $n \geq 0$:
-\[
-    d_i : X_n \to X_{n-1} \quad (0 \leq i \leq n), \qquad s_i : X_n \to X_{n+1} \quad (0 \leq i \leq n)
-\]
-satisfying the \emph{simplicial identities}:
-\begin{align*}
-    d_i d_j & = d_{j-1} d_i \quad \text{if } i < j    \\
-    s_i s_j & = s_{j+1} s_i \quad \text{if } i \leq j \\
-    d_i s_j & =
-    \begin{cases}
-        s_{j-1} d_i & \text{if } i < j                     \\
-        \mathrm{id} & \text{if } i = j \text{ or } i = j+1 \\
-        s_j d_{i-1} & \text{if } i > j+1
-    \end{cases}
-\end{align*}
-
-These maps are called the \emph{face maps} and \emph{degeneracy maps} of the simplicial set $X$.
-
-\begin{example}[Standard $n$-Simplex]
-    In the simplex category $\Delta$, $Hom_\Delta([k],[n])$ is a set, that is,
-    $Hom_\Delta([k],[n]) \in \mathbf{Set}$.
-    For fixed $[n]$, we can define a functor $\Delta[n] : \Delta^{op} \to \mathbf{Set}$ by setting $\Delta[n]([k]) = Hom_\Delta([k],[n])$ and
-    For a morphism $\phi : [l] \to [k]$ in $\Delta$, we can define
-
-    \[
-        \Delta[n](\phi) : Hom_\Delta([k],[n]) \to Hom_\Delta([l],[n]), \quad f \mapsto f \circ \phi
-    \]
-    This defines a  functor and so it is a simplicial set.  This simplicial set is called the \emph{standard $n$-simplex} because its geometric realization is homeomorphic to the standard geometric $n$-simplex.
-
-    \paragraph{}
-    There is an equivalent way to describe the standard $n$-simplex. The set $\Delta[n]_k = Hom_\Delta([k],[n])$ is the set of non-decreasing functions from $\{0,1,\dots,k\}$ to $\{0,1,\dots,n\}$. Such a function is determined by the image of each element in $\{0,1,\dots,k\}$. Since the function is non-decreasing, the image of $i$ must be less than or equal to the image of $i+1$. Therefore, a non-decreasing function from $\{0,1,\dots,k\}$ to $\{0,1,\dots,n\}$ corresponds to a sequence of $k+1$ elements in $\{0,1,\dots,n\}$ that is non-decreasing. In other words, we can identify $\Delta[n]_k$ with the set of $(k+1)$-tuples $(x_0,x_1,\dots,x_k)$ such that $0 \leq x_0 \leq x_1 \leq \cdots \leq x_k \leq n$.
-    The face and degeneracy maps for the standard $n$-simplex $\Delta[n]$ can be described explicitly as follows. Recall that $\Delta[n]_k$ consists of all non-decreasing sequences $(x_0, x_1, \ldots, x_k)$ with $0 \leq x_0 \leq x_1 \leq \cdots \leq x_k \leq n$.
-
-    \begin{itemize}
-        \item The $i$-th face map $d_i : \Delta[n]_k \to \Delta[n]_{k-1}$ is given by deleting the $i$-th entry:
-              \[
-                  d_i(x_0, x_1, \ldots, x_k) = (x_0, \ldots, \widehat{x_i}, \ldots, x_k)
-              \]
-              where $\widehat{x_i}$ means that $x_i$ is omitted.
-
-        \item The $i$-th degeneracy map $s_i : \Delta[n]_k \to \Delta[n]_{k+1}$ is given by repeating the $i$-th entry:
-              \[
-                  s_i(x_0, x_1, \ldots, x_k) = (x_0, \ldots, x_i, x_i, x_{i+1}, \ldots, x_k)
-              \]
-    \end{itemize}
-
-\end{example}
-
-
-\begin{example}
-    Let $X$ be a set and let $K_n =\prod_{i=0}^n X=X^{n+1}$ be the set of $(n+1)$-tuples of elements in $X$. Then, we can define a simplicial set $K$ as follows:
-    \begin{itemize}
-        \item For each $n \geq 0$, let $K_n = X^{n+1}$.
-        \item The face maps $d_i : K_n \to K_{n-1}$ are defined by forgetting the $i$-th element of the tuple.
-              \begin{align*}
-                  d_i(x_0, x_1, \ldots, x_n) & = (x_0, \ldots, x_{i-1}, x_{i+1}, \ldots, x_n) \quad (0 \leq i \leq n)
-              \end{align*}
-        \item The degeneracy maps $s_i : K_n \to K_{n+1}$ are defined by repeating the $i$-th element of the tuple.
-              \begin{align*}
-                  s_i(x_0, x_1, \ldots, x_n) & = (x_0, \ldots, x_i, x_i, x_{i+1}, \ldots, x_n) \quad (0 \leq i \leq n)
-              \end{align*}
-    \end{itemize}
-
-\end{example}
-
-
-\begin{example}
-    The \emph{nerve} of a category $\mathcal{C}$ is a simplicial set defined as follows:
-    \begin{itemize}
-        \item For each $n \geq 0$, let $N(\mathcal{C})_n$ be the set of $(n+1)$-tuples of composable morphisms in $\mathcal{C}$.
-              \[
-                  N(\mathcal{C})_n = \left\{
-                  \begin{tikzcd}[column sep=2.5em,ampersand replacement=\&]
-                      C_0 \arrow[r, "f_1"] \& C_1 \arrow[r, "f_2"] \& \cdots \arrow[r, "f_n"] \& C_n
-                  \end{tikzcd}
-                  \ \middle| \
-                  f_i : C_{i-1} \to C_i \text{ in } \mathcal{C}
-                  \right\}
-              \]
-        \item The face maps $d_i : N(\mathcal{C})_n \to N(\mathcal{C})_{n-1}$ compose the $i$-th and $(i+1)$-st morphisms in the sequence. That is, for a sequence of composable morphisms
-              \[
-                  \begin{tikzcd}[column sep=2.5em,ampersand replacement=\&]
-                      C_0 \arrow[r, "f_1"] \& C_1 \arrow[r, "f_2"] \& \cdots \arrow[r, "f_n"] \& C_n
-                  \end{tikzcd}
-              \]
-              the $i$-th face map ($0 \leq i \leq n$) is given by
-              \[
-                  d_i(f_1, \ldots, f_n) =
-                  \begin{cases}
-                      (f_2, \ldots, f_n)                            & i = 0             \\
-                      (f_1, \ldots, f_i \circ f_{i+1}, \ldots, f_n) & 1 \leq i \leq n-1 \\
-                      (f_1, \ldots, f_{n-1})                        & i = n
-                  \end{cases}
-              \]
-        \item The degeneracy maps $s_i : N(\mathcal{C})_n \to N(\mathcal{C})_{n+1}$ insert an identity morphism at position $i$. That is, for
-              \[
-                  \begin{tikzcd}[column sep=2.5em,ampersand replacement=\&]
-                      C_0 \arrow[r, "f_1"] \& C_1 \arrow[r, "f_2"] \& \cdots \arrow[r, "f_n"] \& C_n
-                  \end{tikzcd}
-              \]
-              the $i$-th degeneracy map ($0 \leq i \leq n$) is
-              \[
-                  s_i(f_1, \ldots, f_n) = (f_1, \ldots, f_i, \mathrm{id}_{C_i}, f_{i+1}, \ldots, f_n)
-              \]
-              which corresponds to the diagram
-              \[
-                  \begin{tikzcd}[column sep=2.5em,ampersand replacement=\&]
-                      C_0 \arrow[r, "f_1"] \& \cdots \arrow[r, "f_i"] \& C_i \arrow[r, "\mathrm{id}_{C_i}"] \& C_i \arrow[r, "f_{i+1}"] \& \cdots \arrow[r, "f_n"] \& C_n
-                  \end{tikzcd}
-              \]
-
-    \end{itemize}
-
-\end{example}
-
-
-\begin{example}[Nerve of a Group]
-    Let $G$ be a group, and consider the category $BG$ with a single object $\ast$ and morphisms $\operatorname{Hom}(\ast, \ast) = G$. The nerve $N_\bullet(BG)$ is a simplicial set where:
-    \begin{itemize}
-        \item $N(BG)_n = G^n$ for $n \geq 0$ (by convention, $G^0$ is a singleton).
-        \item The face maps $d_i : G^n \to G^{n-1}$ are given by:
-              \[
-                  d_i(g_1, \ldots, g_n) =
-                  \begin{cases}
-                      (g_2, \ldots, g_n)                      & i = 0             \\
-                      (g_1, \ldots, g_i g_{i+1}, \ldots, g_n) & 1 \leq i \leq n-1 \\
-                      (g_1, \ldots, g_{n-1})                  & i = n
-                  \end{cases}
-              \]
-        \item The degeneracy maps $s_j : G^n \to G^{n+1}$ are given by:
-              \[
-                  s_j(g_1, \ldots, g_n) = (g_1, \ldots, g_j, e, g_{j+1}, \ldots, g_n)
-              \]
-              where $e$ is the identity element of $G$.
-    \end{itemize}
-\end{example}
-
-
-To form a category of simplicial sets, we need to define morphisms between them.
-
-
-\begin{definition}[Simplicial Map]
-    Let $X, Y : \Delta^{op} \to \mathbf{Set}$ be simplicial sets. A \emph{simplicial map} $f : X \to Y$ is a natural transformation of functors; that is, for each $n \geq 0$, a function $f_n : X_n \to Y_n$ such that for every morphism $\phi : [m] \to [n]$ in $\Delta$, the following diagram commutes:
-    \[
-        \begin{tikzcd}
-            X_n \arrow[r,"f_n"] \arrow[d,"X(\phi^*)"'] & Y_n \arrow[d,"Y(\phi^*)"] \\
-            X_m \arrow[r,"f_m"'] & Y_m
-        \end{tikzcd}
-    \]
-
-\end{definition}
-
-Let's elaborate the definition. A simplicial map $f : X \to Y$ between simplicial sets consists of a sequence of functions $f_n : X_n \to Y_n$ for each $n \geq 0$, compatible with the face and degeneracy maps. That is, for all $n \geq 0$ and $0 \leq i \leq n$, the following diagrams commute:
-\[
-    \begin{tikzcd}
-        X_n \arrow[r,"f_n"] \arrow[d,"d_i"'] & Y_n \arrow[d,"d_i"] \\
-        X_{n-1} \arrow[r,"f_{n-1}"'] & Y_{n-1}
-    \end{tikzcd}
-    \qquad
-    \begin{tikzcd}
-        X_n \arrow[r,"f_n"] \arrow[d,"s_i"'] & Y_n \arrow[d,"s_i"] \\
-        X_{n+1} \arrow[r,"f_{n+1}"'] & Y_{n+1}
-    \end{tikzcd}
-\]
-In other words, $f$ preserves the simplicial structure: it sends $n$-simplices to $n$-simplices in a way that is compatible with taking faces and degeneracies. This is analogous to how a continuous map between topological spaces preserves the structure of open sets, or how a group homomorphism preserves the group operation.
-
-
-Hence ,we can define a category of simplicial sets whose objects are simplicial sets and morphisms are simplicial maps. We denote this category by $\mathbf{sSet}$.
-
-
-\subsection{Basic constructions}
-\paragraph{\textbf{Cartesian Product:}}
-Given two simplicial sets $X, Y : \Delta^{op} \to \mathbf{Set}$, their \emph{cartesianproduct} $X \times Y$ is the simplicial set defined levelwise:
-\[
-    (X \times Y)_n = X_n \times Y_n
-\]
-for each $n \geq 0$. The face and degeneracy maps are defined componentwise:
-\[
-    d_i(x, y) = (d_i x, d_i y), \qquad s_i(x, y) = (s_i x, s_i y)
-\]
-for all $x \in X_n$, $y \in Y_n$, and $0 \leq i \leq n$.
-There are natural projection maps $\pi_X : X \times Y \to X$ and $\pi_Y : X \times Y \to Y$  given by $\pi_X(x, y) = x$ and $\pi_Y(x, y) = y$.
-
-It is easy to see that the projection maps are simplicial maps because
-\[
-    \pi_X (d_i (x,y)) = \pi_X (d_i x, d_i y) = d_i x = d_i ( \pi_X (x,y))
-\]
-and
-\[
-    \pi_X (s_i (x,y)) = \pi_X (s_i x, s_i y) = s_i x = s_i ( \pi_X (x,y))
-\]
-for all $0 \leq i \leq n$.
-
-
-\paragraph{\textbf{Subsimplicial Set:}}
-A \emph{subsimplicial set} of a simplicial set $X$ is a simplicial set $Y$ such that for each $n \geq 0$, the set $Y_n$ is a subset of $X_n$ and the face and degeneracy maps of $Y$ are the restrictions of those of $X$.
-Of course , we required that Y is closed under face and degeneracy maps.
-That is, for all $y \in Y_n$ and $0 \leq i \leq n$, we have $d_i y \in Y_{n-1}$ and $s_i y \in Y_{n+1}$.
-
-If $X ,Y $ are subsimplicial sets of a simplicial set $Z$, then we can form their intersection $X \cap Y$ defined levelwise by
-\[
-    (X \cap Y)_n = X_n \cap Y_n
-\]
-for all $n \geq 0$. The face and degeneracy maps are the restrictions of those of $X$ and $Y$:
-\[
-    d_i (x,y) = (d_i x, d_i y), \qquad s_i (x,y) = (s_i x, s_i y)
-\]
-for all $(x,y) \in (X \cap Y)_n$ and $0 \leq i \leq n$.
-
-Similarly, we can form the union $X \cup Y$ defined levelwise by
-\[
-    (X \cup Y)_n = X_n \cup Y_n
-\]
-for all $n \geq 0$. The face and degeneracy maps are the restrictions of those of $X$ and $Y$:
-\[
-    d_i (x,y) = (d_i x, d_i y), \qquad s_i (x,y) = (s_i x, s_i y)
-\]
-for all $(x,y) \in (X \cup Y)_n$ and $0 \leq i \leq n$.
-
-\paragraph{\textbf{Quotient Simplicial Set:}}
-Given a simplicial set $X$ and an equivalence relation $\sim$ on each $X_n$ that is compatible with the face and degeneracy maps, we can form the \emph{quotient simplicial set} $X/\sim$. The $n$-simplices of $X/\sim$ are the equivalence classes $[x]$ of $n$-simplices $x \in X_n$, and the face and degeneracy maps are defined by:
-\[
-    d_i([x]) = [d_i x], \qquad s_i([x]) = [s_i x]
-\]
-for all $[x] \in (X/\sim)_n$ and $0 \leq i \leq n$.
-A particular case can be the quotient by a subsimplicial set.
-
-
-
-
-
-
-
-
-\section{Simplicial homotopy and Kan complexes}
-We will recall the homotopy theory for topological space and we will try to translate it to simplicial sets.
-
-\subsection{Classical homotopy theory}
-In classical homotopy theory, two continuous maps
-\[
-    f,g : X \to Y
-\]
-between topological spaces are said to be \emph{homotopic} if there exists a continuous map
-\[
-    H : X \times [0,1] \to Y
-\]
-such that
-\[
-    H(x,0) = f(x) \quad \text{and} \quad H(x,1) = g(x) \quad \text{for all } x \in X.
-\]
-The map $H$ is called a \emph{homotopy} from $f$ to $g$.
-
-Diagrammatically, this can be represented as:
-
-\[
-    \begin{tikzcd}[row sep=large, column sep=large]
-        X \times \{0\} \arrow[r,hook,"i_0"] \arrow[dr,"f"'] &
-        X \times [0,1] \arrow[d,"H"] &
-        X \times \{1\} \arrow[l,hook',"i_1"] \arrow[dl,"g"] \\
-        & Y &
-    \end{tikzcd}
-\]
-
-where
-\[
-    i_0(x) = (x,0), \qquad i_1(x) = (x,1).
-\]
-
-
-
-
-The relation ``$f$ is homotopic to $g$'' (denoted $f \simeq g$) is an equivalence relation on
-\[
-    C(X,Y) = \{\, f : X \to Y \mid f \text{ continuous} \,\}.
-\]
-The equivalence classes under this relation are called the \emph{homotopy classes of maps} from $X$ to $Y$, often denoted by $[X,Y]$.
-
-
-
-Let $A \subseteq X$ be a subspace. Two continuous maps
-\[
-    f,g : X \to Y
-\]
-are said to be \emph{homotopic relative to $A$} if there exists a continuous map
-\[
-    H : X \times [0,1] \to Y
-\]
-such that
-\[
-    H(x,0) = f(x), \qquad H(x,1) = g(x) \quad \text{for all } x \in X,
-\]
-and moreover
-\[
-    H(a,t) = f(a) = g(a) \quad \text{for all } a \in A, \ t \in [0,1].
-\]
-
-In other words, the homotopy deforms $f$ to $g$ while keeping the restriction to $A$ fixed throughout.
-We write $f \simeq g \; \mathrm{rel}\, A$ in this case.
-
-
-\[
-    \begin{tikzcd}[row sep=large, column sep=large]
-        A \times [0,1] \arrow[r,hook] \arrow[dr,"f|_A = g|_A"'] &
-        X \times [0,1] \arrow[d,"H"] \\
-        & Y
-    \end{tikzcd}
-\]
-
-
-
-
-
-
-
-
-
-
-Using the homotopy relation, we define fundamental group and homotopy groups.
-First, recall the definition of path and homotopy of paths.
-
-
-
-
-
-
-A \emph{path} in a topological space $X$ is a continuous map
-\[
-    \gamma : [0,1] \to X.
-\]
-The points $\gamma(0)$ and $\gamma(1)$ are called the \emph{initial} and \emph{terminal} points of the path, respectively.
-A path is said to be a \emph{loop} if $\gamma(0) = \gamma(1)$, in which case the common value is called the \emph{basepoint}.
-
-Two paths $\gamma_0, \gamma_1 : [0,1] \to X$ with the same initial and terminal points are \emph{homotopic (rel endpoints)} if there exists a continuous map
-\[
-    H : [0,1] \times [0,1] \to X
-\]
-such that
-\[
-    H(s,0) = \gamma_0(s),
-    \quad H(s,1) = \gamma_1(s),
-    \quad H(0,t) = \gamma_0(0),
-    \quad H(1,t) = \gamma_0(1).
-\]
-That is, the homotopy keeps the endpoints fixed during the deformation.
-
-\paragraph{Fundamental Group:}
-
-Fix a basepoint $x_0 \in X$. The set of all loops based at $x_0$, modulo homotopy relative to the endpoints, forms a group under concatenation of loops.
-This group is called the \emph{fundamental group} of $X$ at $x_0$, and is denoted by
-\[
-    \pi_1(X, x_0).
-\]
-
-\subsection{The set of path components}
-
-More generally, homotopy of paths leads to the notion of path-connectedness. Two points $x,y \in X$ lie in the same \emph{path component} if there exists a path $\gamma : [0,1] \to X$ with $\gamma(0) = x$ and $\gamma(1) = y$.
-The set of path components of $X$ is denoted by
-\[
-    \pi_0(X).
-\]
-Thus $\pi_0(X)$ is a set (not a group in general), which records how many path-connected “pieces’’ the space $X$ has.
-
-
-\subsection{Simplicial Homotopy}
-
-\begin{definition}[Simplicial Homotopy]
-    Let $X$ and $Y$ be simplicial sets, and let $f, g : X \to Y$ be simplicial maps. A \emph{simplicial homotopy} from $f$ to $g$ is a simplicial map
-    \[
-        H : X \times \Delta[1] \to Y
-    \]
-    such that $H(x, 0) = f(x)$ and $H(x, 1) = g(x)$.
-\end{definition}
-
-\begin{remark}
-    This is not an equivalence relation on $\mathbf{sSet}(X,Y)$ in general.
-\end{remark}
-
-
-
-
-
-
-
-
-
-\subsection{Kan Complexes}
-
-\begin{definition}[Kan Complex]
-    A simplicial set $X$ is called a \emph{Kan complex} if for every $n \geq 1$, every $0 \leq k \leq n$, and every collection of $n$ $n$-simplices $\{x_i \in X_{n-1} : i \neq k\}$ such that $d_j x_i = d_{i-1} x_j$ for all $i < j$, $i, j \neq k$, there exists $x \in X_n$ such that $d_i x = x_i$ for all $i \neq k$.
-\end{definition}
-
-\begin{remark}
-    This property is also called the \emph{horn-filling condition}. Kan complexes are the simplicial analogues of topological spaces with good path-lifting properties.
-\end{remark}
-
-\begin{proposition}
-    If $X$ is a Kan complex, then simplicial homotopy is an equivalence relation on the set of simplicial maps $X \to Y$ for any simplicial set $Y$.
-\end{proposition}
-
-\begin{proof}[Sketch of Proof]
-    Reflexivity and symmetry are straightforward. For transitivity, suppose $f \simeq g$ via $H$ and $g \simeq h$ via $K$. The Kan condition allows us to "fill in" the required simplices to construct a homotopy from $f$ to $h$ by gluing $H$ and $K$ along $g$. Thus, in Kan complexes, simplicial homotopy is transitive.
-\end{proof}
-
-\begin{example}
-    The singular simplicial set $Sing(X)$ of a topological space $X$ is always a Kan complex. The nerve of a group is also a Kan complex.
-\end{example}
 
 
 
