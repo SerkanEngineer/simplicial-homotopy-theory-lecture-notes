@@ -1253,7 +1253,30 @@ for degenerate simplices, we have the following characterization
     \]
     for some $y \in X_{n-k}$ and $z \in X_{n-m}$ that are non-degenerate.
 
+    Now we have a simplicial identity
+    \[
+        d_i s_i= id
+    \]
+    Define \[
+        D_i=d_{i_k} \cdots d_{i_2}  d_{i_1}
+    \]
+    and
+    \[
+        D_j=d_{j_m} \cdots d_{j_2}  d_{j_1}
+    \]
+
+
+    Then we have    \[
+        D_i(x) = D_i(s_{i_1} s_{i_2} \cdots s_{i_k}(y)) = y
+    \] and
+    \[
+        D_j(x) = D_j(s_{j_1} s_{j_2} \cdots s_{j_m}(z)) = z
+    \]
+    Thus, we have $y = D_i(x)$ and $z = D_j(x)$.
 \end{proof}
+
+
+
 
 
 
@@ -1392,7 +1415,6 @@ The case for $n=0$ is quite different. The set $\pi_0(X)$ is defined as the set 
 
 Diagrammatically, this can be represented as:
 
-
 \[
     \begin{tikzcd}[row sep=large, column sep=large]
         X \times \Delta[0] \arrow[d,hook,"{(\mathrm{Id}_X,\tilde{d_0})}"'] \arrow[dr,"f"] & \\
@@ -1401,46 +1423,91 @@ Diagrammatically, this can be represented as:
     \end{tikzcd}
 \]
 
-Here , $\tilde{d_0} : \Delta[0] \to \Delta[1]$ and $\tilde{d_1} : \Delta[0] \to \Delta[1]$ are the simplicial maps induced by the face maps $d^0 : [0] \to [1]$ and $d^1 : [0] \to [1]$ in $\Delta$, respectively.
-
-
-
-
-
-
-
-
-
+Here $\tilde{d_0}, \tilde{d_1} : \Delta[0] \to \Delta[1]$ are the simplicial maps induced by the face maps $d^0 : [0] \to [1]$ and $d^1 : [0] \to [1]$ in $\Delta$.
 
 The relation ``$f$ is simplicially homotopic to $g$'' (denoted $f \simeq g$) is called \emph{simplicial homotopy}.
 
 \begin{remark}
     This is not an equivalence relation on $\mathbf{sSet}(X,Y)$ in general.
-
 \end{remark}
 
-For example, take $X=\Delta[0]$. In this case  having a homotopy between the maps $f$ and $g$ gives the following relation.
+---
 
-Let  $a, b \in Y_0$  be 0-simplices. Then,  $a \sim b$ if and only if there exists  $ \sigma \in Y_1$ such that $d_0 \sigma = a$ and $d_1 \sigma = b$.
+For example, take $X = \Delta[0]$. Then maps $X \to Y$ correspond to $0$-simplices of $Y$, i.e. vertices.
+We define the \emph{path relation} on $Y_0$ by declaring that
+\[
+    a \sim b \quad \Longleftrightarrow \quad \exists \,\sigma \in Y_1 \text{ with } d_1\sigma = a, \ d_0\sigma = b.
+\]
 
+This relation need not be symmetric.
+Concretely, in the standard $1$-simplex $\Delta[1]$ we have the nondegenerate $1$-simplex $\sigma = (0,1) \in \Delta[1]_1$ with $d_0\sigma = 1$ and $d_1\sigma = 0$. Thus $0 \sim 1$, but there is no $\mu \in \Delta[1]_1$ with $d_0\mu = 0$ and $d_1\mu = 1$, so $1 \not\sim 0$.
 
-Now, is it an equivalence relation?
+It also need not be transitive. For example, in the simplicial set $Y = \Lambda_1^2$ (the $1$-st horn of the standard $2$-simplex), we have two nondegenerate $1$-simplices $\sigma = (0,1)$ and $\tau = (1,2)$ and three vertices $0,1,2$. Then $0 \sim 1$ and $1 \sim 2$, but there is no $1$-simplex connecting $0$ to $2$. Hence $0 \not\sim 2$.
 
-The answer is no because for a standard 1-simplex $\Delta[1]$, we have a 1-simplex $\sigma= (0,1) \in \Delta[1]_0 $ with $d_0(\sigma)  = 1$ and $d_1(\sigma) = 0$. However, there is no 1-simplex $\mu \in \Delta[1]_1$ such that $d_0(\mu) = 0$ and $d_1(\mu) = 1$. Therefore, the relation is not symmetric.
+Thus the path relation is not an equivalence relation in general.
 
+---
+
+To fix this problem, we require additional conditions on $Y$, leading to the concept of Kan complexes.
 
 \subsection{Kan Complexes}
 
-\begin{definition}[Kan Complex]
-    A simplicial set $X$ is called a \emph{Kan complex} if for every $n \geq 1$, every $0 \leq k \leq n$, and every collection of $n$ $n$-simplices $\{x_i \in X_{n-1} : i \neq k\}$ such that $d_j x_i = d_{i-1} x_j$ for all $i < j$, $i, j \neq k$, there exists $x \in X_n$ such that $d_i x = x_i$ for all $i \neq k$.
+\paragraph{Path relation and horn filling.}
+The failure of symmetry and transitivity above is explained by the inability to fill certain horns.
+For instance:
+
+- To prove transitivity,  if $a \sim b$ via a $1$-simplex $\sigma$ and $b \sim c$ via a $1$-simplex $\tau$, then we want  to show that $a \sim c$. Having 2 edges $\sigma$ and $\tau$ sharing a vertex $b$ means that we have a horn consisting of these two edges and the vertex $b$.
+In other words, we have a simplicial map $\Lambda^2_1 \to Y$ sending the vertices $0,1,2$ of $\Lambda^2_1$ to $a,b,c$ respectively, and the edges $(0,1)$ and $(1,2)$ to $\sigma$ and $\tau$.
+To establish a direct path from $a$ to $c$,
+one would like to fill the horn $\Lambda^2_1$ to obtain a $2$-simplex providing a path from $0$ to $2$.In other words, there is 2 -simplex $\rho$ with $d_2\rho = \sigma$ and $d_0\rho = \tau$. Then $d_1\rho$ is a $1$-simplex from $a$ to $c$, establishing $a \sim c$.
+
+- To prove symmetry, if $a \sim b$ via a $1$-simplex $\sigma$, we want to show that $b \sim a$. This can be also be viewed as filling a horn $\Lambda^2_0$ consisting of the edge $\sigma$ and the vertex $a$. Filling this horn gives a $2$-simplex $\rho$ with $d_1\rho = \sigma$. Then $d_0\rho$ is a $1$-simplex from $b$ to $a$, establishing $b \sim a$.
+- To prove reflexivity, consider the $1$-simplex $s_0(a)$ from $a$ to $a$. So, we have $a \sim a$ without any extra condition.
+
+
+Therefore, to ensure that the path relation is an equivalence relation, we need the ability to fill certain horns in $Y$.
+Diagrammatically, if we have a simplicial map $\Lambda^2_k \to Y$ for $k=0$ or $k=1$, we want to extend it to a simplicial map $\Delta[2] \to Y$ making the diagram commute:
+
+
+\[
+    \begin{tikzcd}[row sep=large, column sep=large]
+        \Lambda^2_k \arrow[d,hook] \arrow[dr] & \\
+        \Delta[2] \arrow[r,dashed] & Y
+    \end{tikzcd}
+\]
+
+\paragraph{Kan condition.}
+
+Path relation is an equivalence relation on $\mathbf{sSet}(\Delta[0],Y)$ if we can fill all horns $\Lambda^2_0$ and $\Lambda^2_1$.
+To ensure that simplicial homotopy is an equivalence relation on $\mathbf{sSet}(X,Y)$, we need to be able to fill all horns $\Lambda^n_k$ for all $n \geq 1$ and $0 \leq k \leq n$.
+
+
+
+\begin{definition}
+    We say that a simplicial set $Y$ is a \emph{Kan complex} if the following holds:
+    for every $n \geq 1$, every $0 \leq k \leq n$, and every simplicial map $\Lambda^n_k \to Y$, there exists a simplicial map $\Delta[n] \to Y$ making the diagram commute
+    \[
+        \begin{tikzcd}[row sep=large, column sep=large]
+            \Lambda^n_k \arrow[d,hook] \arrow[dr] & \\
+            \Delta[n] \arrow[r,dashed] & Y
+        \end{tikzcd}
+    \]
 \end{definition}
 
-\begin{remark}
-    This property is also called the \emph{horn-filling condition}. Kan complexes are the simplicial analogues of topological spaces with good path-lifting properties.
-\end{remark}
+
+
+Equivalently, in combinatorial terms:
+
+\begin{definition}[Kan Complex]
+    A simplicial set $X$ is a \emph{Kan complex} if for every $n \geq 1$, every $0 \leq k \leq n$, and every collection of $(n-1)$-simplices $\{x_i \in X_{n-1} : i \neq k\}$ satisfying the compatibility condition $d_j x_i = d_{i-1} x_j$ for all $i < j$, $i,j \neq k$, there exists an $n$-simplex $x \in X_n$ such that $d_i x = x_i$ for all $i \neq k$.
+\end{definition}
+
+
+
+
 
 \begin{proposition}
-    If $X$ is a Kan complex, then simplicial homotopy is an equivalence relation on the set of simplicial maps $X \to Y$ for any simplicial set $Y$.
+    If $Y$ is a Kan complex, then simplicial homotopy is an equivalence relation on the set of simplicial maps $X \to Y$ for any simplicial set $X$.
 \end{proposition}
 
 \begin{proof}[Sketch of Proof]
